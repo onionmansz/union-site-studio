@@ -1,0 +1,50 @@
+import { Button } from "@/components/ui/button";
+import heroImage from "@/assets/wedding-hero.jpg";
+
+const HeroSection = () => {
+  return (
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src={heroImage} 
+          alt="Wedding flowers background" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/60" />
+      </div>
+      
+      {/* Content */}
+      <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
+        <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide">
+          Sarah <span className="text-rose">&</span> Michael
+        </h1>
+        
+        <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
+        
+        <p className="text-xl md:text-2xl text-muted-foreground font-light mb-8 animate-fade-in-up">
+          Together with our families, we invite you to celebrate our love story
+        </p>
+        
+        <div className="text-lg md:text-xl text-foreground mb-12 animate-fade-in-up">
+          <p className="font-serif italic">June 15th, 2024</p>
+          <p className="text-muted-foreground">Garden Grove Estate, California</p>
+        </div>
+        
+        <Button 
+          size="lg" 
+          className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-medium shadow-romantic animate-scale-in"
+        >
+          RSVP Now
+        </Button>
+      </div>
+      
+      {/* Floating elements */}
+      <div className="absolute top-20 left-10 w-4 h-4 bg-champagne rounded-full opacity-60 animate-float" />
+      <div className="absolute bottom-32 right-16 w-3 h-3 bg-rose rounded-full opacity-40 animate-float" style={{animationDelay: '1s'}} />
+      <div className="absolute top-1/3 right-8 w-2 h-2 bg-sage rounded-full opacity-50 animate-float" style={{animationDelay: '2s'}} />
+    </section>
+  );
+};
+
+export default HeroSection;
