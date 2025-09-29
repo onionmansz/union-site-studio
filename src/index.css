@@ -8,50 +8,50 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Wedding Color Palette */
-    --background: 355 100% 99%;
-    --foreground: 339 20% 20%;
+    /* Cream Wedding Color Palette */
+    --background: 45 44% 94%;
+    --foreground: 0 0% 0%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 339 20% 20%;
+    --card: 45 44% 96%;
+    --card-foreground: 0 0% 0%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 339 20% 20%;
+    --popover: 45 44% 96%;
+    --popover-foreground: 0 0% 0%;
 
-    /* Romantic Blush Pink */
-    --primary: 350 47% 88%;
-    --primary-foreground: 339 20% 20%;
+    /* Cream Primary */
+    --primary: 45 44% 88%;
+    --primary-foreground: 0 0% 0%;
 
-    /* Sage Green */
-    --secondary: 120 13% 75%;
-    --secondary-foreground: 339 20% 20%;
+    /* Warm Beige */
+    --secondary: 40 25% 85%;
+    --secondary-foreground: 0 0% 0%;
 
-    /* Soft Neutral */
-    --muted: 30 25% 95%;
-    --muted-foreground: 339 20% 55%;
+    /* Soft Cream */
+    --muted: 45 44% 92%;
+    --muted-foreground: 0 0% 20%;
 
-    /* Champagne Gold */
-    --accent: 42 78% 85%;
-    --accent-foreground: 339 20% 20%;
+    /* Light Cream */
+    --accent: 50 50% 90%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 30 25% 90%;
-    --input: 30 25% 90%;
-    --ring: 350 47% 88%;
+    --border: 40 25% 80%;
+    --input: 40 25% 80%;
+    --ring: 45 44% 88%;
 
     /* Wedding-specific tokens */
-    --rose: 350 47% 88%;
-    --rose-light: 350 47% 95%;
-    --sage: 120 13% 75%;
-    --sage-light: 120 13% 90%;
-    --champagne: 42 78% 85%;
-    --champagne-light: 42 78% 92%;
+    --rose: 45 44% 88%;
+    --rose-light: 45 44% 94%;
+    --sage: 40 25% 85%;
+    --sage-light: 40 25% 90%;
+    --champagne: 50 50% 90%;
+    --champagne-light: 50 50% 95%;
     
     /* Gradients */
-    --gradient-romantic: linear-gradient(135deg, hsl(var(--rose-light)), hsl(var(--champagne-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(350 47% 92%), hsl(42 78% 88%));
+    --gradient-romantic: linear-gradient(135deg, hsl(45 44% 94%), hsl(50 50% 90%));
+    --gradient-hero: linear-gradient(135deg, hsl(45 44% 92%), hsl(50 50% 88%));
     
     /* Shadows */
     --shadow-romantic: 0 4px 20px -2px hsl(350 47% 88% / 0.3);
@@ -77,45 +77,45 @@ All colors MUST be HSL.
   }
 
   .dark {
-    /* Dark mode with warm, romantic tones */
-    --background: 339 20% 10%;
-    --foreground: 355 100% 98%;
+    /* Dark cream theme */
+    --background: 40 25% 15%;
+    --foreground: 45 44% 96%;
 
-    --card: 339 20% 12%;
-    --card-foreground: 355 100% 98%;
+    --card: 40 25% 18%;
+    --card-foreground: 45 44% 96%;
 
-    --popover: 339 20% 12%;
-    --popover-foreground: 355 100% 98%;
+    --popover: 40 25% 18%;
+    --popover-foreground: 45 44% 96%;
 
-    --primary: 350 47% 75%;
-    --primary-foreground: 339 20% 15%;
+    --primary: 45 44% 75%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 120 13% 25%;
-    --secondary-foreground: 355 100% 98%;
+    --secondary: 40 25% 65%;
+    --secondary-foreground: 45 44% 96%;
 
-    --muted: 339 20% 15%;
-    --muted-foreground: 339 10% 70%;
+    --muted: 40 25% 20%;
+    --muted-foreground: 40 25% 70%;
 
-    --accent: 42 78% 65%;
-    --accent-foreground: 339 20% 15%;
+    --accent: 50 50% 70%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 62.8% 50%;
-    --destructive-foreground: 355 100% 98%;
+    --destructive-foreground: 45 44% 96%;
 
-    --border: 339 20% 20%;
-    --input: 339 20% 20%;
-    --ring: 350 47% 75%;
+    --border: 40 25% 25%;
+    --input: 40 25% 25%;
+    --ring: 45 44% 75%;
     
     /* Dark mode wedding tokens */
-    --rose: 350 47% 75%;
-    --rose-light: 350 47% 85%;
-    --sage: 120 13% 35%;
-    --sage-light: 120 13% 45%;
-    --champagne: 42 78% 65%;
-    --champagne-light: 42 78% 75%;
+    --rose: 45 44% 75%;
+    --rose-light: 45 44% 85%;
+    --sage: 40 25% 65%;
+    --sage-light: 40 25% 75%;
+    --champagne: 50 50% 70%;
+    --champagne-light: 50 50% 80%;
     
-    --gradient-romantic: linear-gradient(135deg, hsl(339 20% 15%), hsl(339 20% 20%));
-    --gradient-hero: linear-gradient(135deg, hsl(350 47% 20%), hsl(42 78% 25%));
+    --gradient-romantic: linear-gradient(135deg, hsl(40 25% 18%), hsl(40 25% 22%));
+    --gradient-hero: linear-gradient(135deg, hsl(45 44% 25%), hsl(50 50% 30%));
     
     --shadow-romantic: 0 4px 20px -2px hsl(350 47% 88% / 0.1);
     --shadow-elegant: 0 8px 30px -8px hsl(350 47% 88% / 0.2);

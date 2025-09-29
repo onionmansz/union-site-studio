@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
           <h3 className="font-serif text-3xl font-bold mb-4">
-            Sarah <span className="text-rose">&</span> Michael
+            Vajayjay <span className="text-rose">&</span> Geeeners
           </h3>
           <div className="w-16 h-px bg-champagne mx-auto mb-6" />
           <p className="text-lg font-light">
@@ -16,7 +16,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">Contact</h4>
             <p className="opacity-80">Questions? Email us at</p>
-            <p className="text-champagne">hello@sarahandmichael.com</p>
+            <p className="text-champagne">hello@vajayjayandgeeeners.com</p>
           </div>
           
           <div>
@@ -28,7 +28,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">Follow Our Journey</h4>
             <p className="opacity-80">Wedding hashtag:</p>
-            <p className="text-sage">#SarahAndMichaelSayIDo</p>
+            <p className="text-sage">#VajayjayAndGeenersSayIDo</p>
           </div>
         </div>
         

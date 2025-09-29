@@ -3,21 +3,11 @@ import heroImage from "@/assets/wedding-hero.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Wedding flowers background" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/20 to-background/60" />
-      </div>
-      
+    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide">
-          Sarah <span className="text-rose">&</span> Michael
+          Vajayjay <span className="text-rose">&</span> Geeeners
         </h1>
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
