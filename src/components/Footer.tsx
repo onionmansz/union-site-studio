@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="bg-foreground text-background py-12 px-6">
@@ -36,6 +38,12 @@ const Footer = () => {
           <p className="text-sm opacity-60">
             Made with love for our special day ❤️
           </p>
+          <Link 
+            to="/auth" 
+            className="text-xs opacity-40 hover:opacity-60 transition-opacity mt-2 inline-block"
+          >
+            Admin
+          </Link>
         </div>
       </div>
     </footer>

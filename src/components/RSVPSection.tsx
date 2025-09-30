@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const RSVPSection = () => {
   const [formData, setFormData] = useState({
@@ -18,9 +19,27 @@ const RSVPSection = () => {
   
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send to a backend service
+    
+    const { error } = await supabase.from('rsvps').insert({
+      name: formData.name,
+      email: formData.email,
+      attendance: formData.attendance === 'yes' ? 'attending' : 'not-attending',
+      guests: formData.attendance === 'yes' ? parseInt(formData.guests) : null,
+      dietary_restrictions: formData.dietaryRestrictions || null,
+      message: formData.message || null,
+    });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit RSVP. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: "RSVP Received! 💕",
       description: "Thank you for your response. We'll send you more details soon!",
