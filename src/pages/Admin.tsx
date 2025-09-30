@@ -20,30 +20,56 @@ const Admin = () => {
   const [rsvps, setRsvps] = useState<RSVP[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check authentication
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check authentication and admin status
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
-        fetchRSVPs();
+        await checkAdminStatus(session.user.id);
       }
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!session) {
         navigate("/auth");
       } else {
         setUser(session.user);
+        await checkAdminStatus(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkAdminStatus = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
+      setIsAdmin(true);
+      fetchRSVPs();
+    } else {
+      setIsAdmin(false);
+      setLoading(false);
+    }
+  };
 
   const fetchRSVPs = async () => {
     setLoading(true);
@@ -78,6 +104,23 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+        <Card className="max-w-md p-8 text-center">
+          <h1 className="font-serif text-3xl mb-4 text-foreground">Access Denied</h1>
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access the admin dashboard.
+          </p>
+          <div className="flex gap-4 justify-center">
+            <Button onClick={() => navigate("/")}>Back to Site</Button>
+            <Button onClick={handleLogout} variant="outline">Logout</Button>
+          </div>
+        </Card>
       </div>
     );
   }
