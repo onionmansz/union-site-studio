@@ -22,6 +22,7 @@ const GuestListManager = () => {
     email: "",
     party_id: ""
   });
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -44,6 +45,18 @@ const GuestListManager = () => {
       });
     } else {
       setGuests(data || []);
+      
+      // Group parties for the dropdown
+      const parties = (data || []).reduce((acc, guest) => {
+        const existing = acc.find(p => p.party_id === guest.party_id);
+        if (existing) {
+          existing.names.push(guest.name);
+        } else {
+          acc.push({ party_id: guest.party_id, names: [guest.name] });
+        }
+        return acc;
+      }, [] as Array<{ party_id: string; names: string[] }>);
+      setExistingParties(parties);
     }
     setLoading(false);
   };
@@ -60,8 +73,8 @@ const GuestListManager = () => {
       return;
     }
 
-    // Use existing party_id or generate a new one
-    const partyId = newGuest.party_id.trim() || crypto.randomUUID();
+    // Use selected party_id or generate a new one
+    const partyId = newGuest.party_id || crypto.randomUUID();
 
     const { error } = await supabase.from('guest_list').insert({
       party_id: partyId,
@@ -154,15 +167,22 @@ const GuestListManager = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="party_id">Party ID (optional)</Label>
-              <Input
+              <Label htmlFor="party_id">Add to Party (optional)</Label>
+              <select
                 id="party_id"
                 value={newGuest.party_id}
                 onChange={(e) => setNewGuest({ ...newGuest, party_id: e.target.value })}
-                placeholder="Leave blank for new party"
-              />
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <option value="">Create new party</option>
+                {existingParties.map((party) => (
+                  <option key={party.party_id} value={party.party_id}>
+                    {party.names.join(", ")}
+                  </option>
+                ))}
+              </select>
               <p className="text-xs text-muted-foreground">
-                Use same Party ID to group guests together
+                Select a party to add this guest to, or leave blank to create a new party
               </p>
             </div>
           </div>
