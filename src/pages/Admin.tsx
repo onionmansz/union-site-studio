@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import GuestListManager from "@/components/GuestListManager";
 
 interface GuestInfo {
   id: string;
@@ -139,66 +141,79 @@ const Admin = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="p-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Responses</h3>
-            <p className="text-3xl font-bold text-foreground">{rsvps.length}</p>
-          </Card>
-          <Card className="p-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Attending</h3>
-            <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
-          </Card>
-          <Card className="p-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Attending Guests</h3>
-            <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
-          </Card>
-        </div>
+        <Tabs defaultValue="rsvps" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="rsvps">RSVPs</TabsTrigger>
+            <TabsTrigger value="guests">Guest List</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="rsvps">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <Card className="p-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Responses</h3>
+                <p className="text-3xl font-bold text-foreground">{rsvps.length}</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">Attending</h3>
+                <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">Attending Guests</h3>
+                <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
+              </Card>
+            </div>
 
-        <Card className="p-6">
-          <h2 className="text-2xl font-serif mb-6 text-foreground">All RSVPs</h2>
-          <div className="space-y-4">
-            {rsvps.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">No RSVPs yet</p>
-            ) : (
-              rsvps.map((rsvp) => (
-                <div
-                  key={rsvp.id}
-                  className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="font-semibold text-foreground">{rsvp.guest_list?.name || 'Unknown Guest'}</p>
-                      {rsvp.guest_list?.email && (
-                        <p className="text-sm text-muted-foreground">{rsvp.guest_list.email}</p>
-                      )}
-                      <p className="text-sm mt-2">
-                        <span className="font-medium">Status: </span>
-                        <span className="text-green-600">Attending</span>
-                      </p>
+            <Card className="p-6">
+              <h2 className="text-2xl font-serif mb-6 text-foreground">All RSVPs</h2>
+              <div className="space-y-4">
+                {rsvps.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">No RSVPs yet</p>
+                ) : (
+                  rsvps.map((rsvp) => (
+                    <div
+                      key={rsvp.id}
+                      className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <p className="font-semibold text-foreground">{rsvp.guest_list?.name || 'Unknown Guest'}</p>
+                          {rsvp.guest_list?.email && (
+                            <p className="text-sm text-muted-foreground">{rsvp.guest_list.email}</p>
+                          )}
+                          <p className="text-sm mt-2">
+                            <span className="font-medium">Status: </span>
+                            <span className="text-green-600">Attending</span>
+                          </p>
+                        </div>
+                        <div>
+                          {rsvp.dietary_restrictions && (
+                            <p className="text-sm mb-2">
+                              <span className="font-medium">Dietary Restrictions: </span>
+                              {rsvp.dietary_restrictions}
+                            </p>
+                          )}
+                          {rsvp.message && (
+                            <p className="text-sm">
+                              <span className="font-medium">Message: </span>
+                              {rsvp.message}
+                            </p>
+                          )}
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {new Date(rsvp.created_at).toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      {rsvp.dietary_restrictions && (
-                        <p className="text-sm mb-2">
-                          <span className="font-medium">Dietary Restrictions: </span>
-                          {rsvp.dietary_restrictions}
-                        </p>
-                      )}
-                      {rsvp.message && (
-                        <p className="text-sm">
-                          <span className="font-medium">Message: </span>
-                          {rsvp.message}
-                        </p>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-2">
-                        {new Date(rsvp.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </Card>
+                  ))
+                )}
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="guests">
+            <GuestListManager />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
