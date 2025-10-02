@@ -14,38 +14,64 @@ export type Database = {
   }
   public: {
     Tables: {
+      guest_list: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          party_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          party_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          party_id?: string
+        }
+        Relationships: []
+      }
       rsvps: {
         Row: {
           attendance: string
           created_at: string
           dietary_restrictions: string | null
-          email: string
-          guests: number | null
+          guest_list_id: string | null
           id: string
           message: string | null
-          name: string
         }
         Insert: {
           attendance: string
           created_at?: string
           dietary_restrictions?: string | null
-          email: string
-          guests?: number | null
+          guest_list_id?: string | null
           id?: string
           message?: string | null
-          name: string
         }
         Update: {
           attendance?: string
           created_at?: string
           dietary_restrictions?: string | null
-          email?: string
-          guests?: number | null
+          guest_list_id?: string | null
           id?: string
           message?: string | null
-          name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_guest_list_id_fkey"
+            columns: ["guest_list_id"]
+            isOneToOne: false
+            referencedRelation: "guest_list"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

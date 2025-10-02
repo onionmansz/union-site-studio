@@ -5,15 +5,21 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-interface RSVP {
+interface GuestInfo {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
+  party_id: string;
+}
+
+interface RSVP {
+  id: string;
+  guest_list_id: string;
   attendance: string;
-  guests: number | null;
   dietary_restrictions: string | null;
   message: string | null;
   created_at: string;
+  guest_list?: GuestInfo;
 }
 
 const Admin = () => {
@@ -75,7 +81,7 @@ const Admin = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('rsvps')
-      .select('*')
+      .select('*, guest_list(*)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -96,9 +102,6 @@ const Admin = () => {
   };
 
   const attendingCount = rsvps.filter(r => r.attendance === 'attending').length;
-  const totalGuests = rsvps
-    .filter(r => r.attendance === 'attending')
-    .reduce((sum, r) => sum + (r.guests || 1), 0);
 
   if (loading) {
     return (
@@ -146,8 +149,8 @@ const Admin = () => {
             <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
           </Card>
           <Card className="p-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Guests</h3>
-            <p className="text-3xl font-bold text-foreground">{totalGuests}</p>
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">Attending Guests</h3>
+            <p className="text-3xl font-bold text-foreground">{attendingCount}</p>
           </Card>
         </div>
 
@@ -164,20 +167,14 @@ const Admin = () => {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <p className="font-semibold text-foreground">{rsvp.name}</p>
-                      <p className="text-sm text-muted-foreground">{rsvp.email}</p>
+                      <p className="font-semibold text-foreground">{rsvp.guest_list?.name || 'Unknown Guest'}</p>
+                      {rsvp.guest_list?.email && (
+                        <p className="text-sm text-muted-foreground">{rsvp.guest_list.email}</p>
+                      )}
                       <p className="text-sm mt-2">
                         <span className="font-medium">Status: </span>
-                        <span className={rsvp.attendance === 'attending' ? 'text-green-600' : 'text-red-600'}>
-                          {rsvp.attendance === 'attending' ? 'Attending' : 'Not Attending'}
-                        </span>
+                        <span className="text-green-600">Attending</span>
                       </p>
-                      {rsvp.guests && (
-                        <p className="text-sm">
-                          <span className="font-medium">Guests: </span>
-                          {rsvp.guests}
-                        </p>
-                      )}
                     </div>
                     <div>
                       {rsvp.dietary_restrictions && (

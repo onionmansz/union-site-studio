@@ -4,32 +4,96 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+interface GuestListMember {
+  id: string;
+  name: string;
+  email: string | null;
+  party_id: string;
+}
+
 const RSVPSection = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    attendance: "",
-    guests: "1",
-    dietaryRestrictions: "",
-    message: ""
-  });
+  const [searchName, setSearchName] = useState("");
+  const [partyMembers, setPartyMembers] = useState<GuestListMember[]>([]);
+  const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
+  const [dietaryRestrictions, setDietaryRestrictions] = useState<Record<string, string>>({});
+  const [message, setMessage] = useState("");
+  const [showPartyForm, setShowPartyForm] = useState(false);
   
   const { toast } = useToast();
+
+  const handleNameSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!searchName.trim()) {
+      toast({
+        title: "Please enter a name",
+        description: "Enter your name to find your party.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Search for the name in guest list
+    const { data: foundGuest, error: searchError } = await supabase
+      .from('guest_list')
+      .select('*')
+      .ilike('name', `%${searchName.trim()}%`)
+      .limit(1)
+      .maybeSingle();
+
+    if (searchError || !foundGuest) {
+      toast({
+        title: "Name not found",
+        description: "We couldn't find your name on the guest list. Please check the spelling or contact the couple.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Fetch all party members
+    const { data: party, error: partyError } = await supabase
+      .from('guest_list')
+      .select('*')
+      .eq('party_id', foundGuest.party_id);
+
+    if (partyError || !party) {
+      toast({
+        title: "Error",
+        description: "Failed to load party information. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setPartyMembers(party);
+    setShowPartyForm(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const { error } = await supabase.from('rsvps').insert({
-      name: formData.name,
-      email: formData.email,
-      attendance: formData.attendance === 'yes' ? 'attending' : 'not-attending',
-      guests: formData.attendance === 'yes' ? parseInt(formData.guests) : null,
-      dietary_restrictions: formData.dietaryRestrictions || null,
-      message: formData.message || null,
-    });
+    if (selectedGuests.length === 0) {
+      toast({
+        title: "No guests selected",
+        description: "Please select who will be attending.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create RSVPs for selected guests
+    const rsvpsToInsert = selectedGuests.map(guestId => ({
+      guest_list_id: guestId,
+      attendance: 'attending',
+      dietary_restrictions: dietaryRestrictions[guestId] || null,
+      message: message || null,
+    }));
+
+    const { error } = await supabase.from('rsvps').insert(rsvpsToInsert);
 
     if (error) {
       toast({
@@ -46,21 +110,20 @@ const RSVPSection = () => {
     });
     
     // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      attendance: "",
-      guests: "1",
-      dietaryRestrictions: "",
-      message: ""
-    });
+    setSearchName("");
+    setPartyMembers([]);
+    setSelectedGuests([]);
+    setDietaryRestrictions({});
+    setMessage("");
+    setShowPartyForm(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const toggleGuest = (guestId: string) => {
+    setSelectedGuests(prev => 
+      prev.includes(guestId) 
+        ? prev.filter(id => id !== guestId)
+        : [...prev, guestId]
+    );
   };
 
   return (
@@ -86,127 +149,125 @@ const RSVPSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            {!showPartyForm ? (
+              <form onSubmit={handleNameSearch} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-foreground font-medium">
-                    Full Name *
+                  <Label htmlFor="searchName" className="text-foreground font-medium">
+                    Enter Your Name *
                   </Label>
                   <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
+                    id="searchName"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
                     required
                     className="border-sage/30 focus:border-rose"
-                    placeholder="Your name"
+                    placeholder="Your full name"
                   />
+                  <p className="text-sm text-muted-foreground">
+                    We'll look up your party and show everyone invited with you.
+                  </p>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-foreground font-medium">
-                    Email Address *
+
+                <div className="text-center pt-4">
+                  <Button 
+                    type="submit"
+                    className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-medium shadow-romantic"
+                  >
+                    Find My Party
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                  <Label className="text-foreground font-medium text-lg">
+                    Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="border-sage/30 focus:border-rose"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <Label className="text-foreground font-medium">Will you be attending? *</Label>
-                <div className="flex gap-4">
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="attendance"
-                      value="yes"
-                      checked={formData.attendance === "yes"}
-                      onChange={handleChange}
-                      className="text-rose focus:ring-rose"
-                      required
-                    />
-                    <span className="text-foreground">Yes, I'll be there! 🎉</span>
-                  </label>
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="attendance"
-                      value="no"
-                      checked={formData.attendance === "no"}
-                      onChange={handleChange}
-                      className="text-rose focus:ring-rose"
-                      required
-                    />
-                    <span className="text-foreground">Sorry, can't make it 😢</span>
-                  </label>
-                </div>
-              </div>
-
-              {formData.attendance === "yes" && (
-                <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
-                  <div className="space-y-2">
-                    <Label htmlFor="guests" className="text-foreground font-medium">
-                      Number of Guests (including yourself)
-                    </Label>
-                    <Input
-                      id="guests"
-                      name="guests"
-                      type="number"
-                      min="1"
-                      max="5"
-                      value={formData.guests}
-                      onChange={handleChange}
-                      className="border-sage/30 focus:border-rose"
-                    />
-                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Select who will be attending:
+                  </p>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="dietaryRestrictions" className="text-foreground font-medium">
-                      Dietary Restrictions
-                    </Label>
-                    <Input
-                      id="dietaryRestrictions"
-                      name="dietaryRestrictions"
-                      value={formData.dietaryRestrictions}
-                      onChange={handleChange}
-                      className="border-sage/30 focus:border-rose"
-                      placeholder="None, vegetarian, allergies, etc."
-                    />
+                  <div className="space-y-4 border border-border rounded-lg p-4">
+                    {partyMembers.map((member) => (
+                      <div key={member.id} className="space-y-3 pb-4 border-b last:border-b-0 last:pb-0">
+                        <div className="flex items-start space-x-3">
+                          <Checkbox
+                            id={member.id}
+                            checked={selectedGuests.includes(member.id)}
+                            onCheckedChange={() => toggleGuest(member.id)}
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <label
+                              htmlFor={member.id}
+                              className="text-foreground font-medium cursor-pointer block"
+                            >
+                              {member.name}
+                            </label>
+                            {member.email && (
+                              <p className="text-sm text-muted-foreground">{member.email}</p>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {selectedGuests.includes(member.id) && (
+                          <div className="ml-8 animate-fade-in">
+                            <Label htmlFor={`dietary-${member.id}`} className="text-sm text-muted-foreground">
+                              Dietary Restrictions
+                            </Label>
+                            <Input
+                              id={`dietary-${member.id}`}
+                              value={dietaryRestrictions[member.id] || ""}
+                              onChange={(e) => setDietaryRestrictions(prev => ({
+                                ...prev,
+                                [member.id]: e.target.value
+                              }))}
+                              className="border-sage/30 focus:border-rose mt-1"
+                              placeholder="None, vegetarian, allergies, etc."
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              )}
 
-              <div className="space-y-2">
-                <Label htmlFor="message" className="text-foreground font-medium">
-                  Message for the Happy Couple
-                </Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="border-sage/30 focus:border-rose min-h-[100px]"
-                  placeholder="Share your excitement, memories, or well wishes..."
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message" className="text-foreground font-medium">
+                    Message for the Happy Couple
+                  </Label>
+                  <Textarea
+                    id="message"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="border-sage/30 focus:border-rose min-h-[100px]"
+                    placeholder="Share your excitement, memories, or well wishes..."
+                  />
+                </div>
 
-              <div className="text-center pt-4">
-                <Button 
-                  type="submit"
-                  className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-medium shadow-romantic"
-                >
-                  Send RSVP
-                </Button>
-              </div>
-            </form>
+                <div className="flex gap-4 pt-4">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowPartyForm(false);
+                      setPartyMembers([]);
+                      setSelectedGuests([]);
+                      setDietaryRestrictions({});
+                    }}
+                    className="flex-1"
+                  >
+                    Back
+                  </Button>
+                  <Button 
+                    type="submit"
+                    className="bg-rose hover:bg-rose/90 text-rose-foreground flex-1 shadow-romantic"
+                  >
+                    Send RSVP
+                  </Button>
+                </div>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>
