@@ -155,9 +155,6 @@ const RSVPSection = () => {
           <p className="text-xl text-muted-foreground">
             Please let us know if you can celebrate with us!
           </p>
-          <p className="text-lg text-rose font-medium mt-4">
-            Kindly respond by May 1st, 2024
-          </p>
         </div>
 
         <Card className="bg-card/95 backdrop-blur-sm border-0 shadow-elegant animate-scale-in">

@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import LocationMap from "./LocationMap";
 
 const WeddingDetails = () => {
   const details = [
@@ -66,6 +67,14 @@ const WeddingDetails = () => {
           </h3>
           <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
             <div>
+              <h4 className="font-semibold text-foreground mb-2">RSVP Deadline</h4>
+              <p className="text-muted-foreground">Kindly respond by <span className="text-rose font-semibold">May 1st, 2024</span></p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-2">Adults-Only Celebration</h4>
+              <p className="text-muted-foreground">We love your little ones, but this is an adults-only celebration. Thank you for understanding!</p>
+            </div>
+            <div>
               <h4 className="font-semibold text-foreground mb-2">Dress Code</h4>
               <p className="text-muted-foreground">Cocktail attire suggested. Think garden party elegance!</p>
             </div>
@@ -83,6 +92,8 @@ const WeddingDetails = () => {
             </div>
           </div>
         </div>
+
+        <LocationMap />
       </div>
     </section>
   );
