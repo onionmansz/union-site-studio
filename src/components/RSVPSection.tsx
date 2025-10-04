@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import Fuse from "fuse.js";
 
 interface GuestListMember {
   id: string;
@@ -37,15 +38,30 @@ const RSVPSection = () => {
       return;
     }
 
-    // Search for the name in guest list
-    const { data: foundGuest, error: searchError } = await supabase
+    // Fetch all guests for fuzzy matching
+    const { data: allGuests, error: fetchError } = await supabase
       .from('guest_list')
-      .select('*')
-      .ilike('name', `%${searchName.trim()}%`)
-      .limit(1)
-      .maybeSingle();
+      .select('*');
 
-    if (searchError || !foundGuest) {
+    if (fetchError || !allGuests || allGuests.length === 0) {
+      toast({
+        title: "Error",
+        description: "Failed to load guest list. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Use Fuse.js for fuzzy name matching
+    const fuse = new Fuse(allGuests, {
+      keys: ['name'],
+      threshold: 0.4, // Lower = stricter matching (0.0 = exact, 1.0 = match anything)
+      includeScore: true,
+    });
+
+    const results = fuse.search(searchName.trim());
+
+    if (results.length === 0) {
       toast({
         title: "Name not found",
         description: "We couldn't find your name on the guest list. Please check the spelling or contact the couple.",
@@ -53,6 +69,8 @@ const RSVPSection = () => {
       });
       return;
     }
+
+    const foundGuest = results[0].item;
 
     // Fetch all party members
     const { data: party, error: partyError } = await supabase
