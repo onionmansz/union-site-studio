@@ -62,9 +62,12 @@ const RSVPSection = () => {
     const results = fuse.search(searchName.trim());
 
     if (results.length === 0) {
+      // Add artificial delay to prevent timing attacks
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       toast({
-        title: "Name not found",
-        description: "We couldn't find your name on the guest list. Please check the spelling or contact the couple.",
+        title: "Unable to find your information",
+        description: "Please check your spelling or contact the couple.",
         variant: "destructive",
       });
       return;
@@ -230,13 +233,14 @@ const RSVPSection = () => {
                             <Label htmlFor={`dietary-${member.id}`} className="text-sm text-muted-foreground">
                               Dietary Restrictions
                             </Label>
-                            <Input
+                             <Input
                               id={`dietary-${member.id}`}
                               value={dietaryRestrictions[member.id] || ""}
                               onChange={(e) => setDietaryRestrictions(prev => ({
                                 ...prev,
                                 [member.id]: e.target.value
                               }))}
+                              maxLength={500}
                               className="border-sage/30 focus:border-rose mt-1"
                               placeholder="None, vegetarian, allergies, etc."
                             />
@@ -255,6 +259,7 @@ const RSVPSection = () => {
                     id="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    maxLength={1000}
                     className="border-sage/30 focus:border-rose min-h-[100px]"
                     placeholder="Share your excitement, memories, or well wishes..."
                   />
