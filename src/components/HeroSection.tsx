@@ -7,7 +7,7 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide">
-          Vajayjay <span className="text-rose">&</span> Geeeners
+          Genna <span className="text-rose">&</span> Julian
         </h1>
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
