@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
           <h3 className="font-serif text-3xl font-bold mb-4">
-            Genna <span className="text-rose">&</span> Julian
+            Genna <span className="text-rose font-extrabold">&</span> Julian
           </h3>
           <div className="w-16 h-px bg-champagne mx-auto mb-6" />
           <p className="text-lg font-light">

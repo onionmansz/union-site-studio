@@ -7,9 +7,9 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-elegant">
-          <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide drop-shadow-lg">
-            Genna <span className="text-rose">&</span> Julian
-          </h1>
+        <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide drop-shadow-lg">
+          Genna <span className="text-rose font-extrabold">&</span> Julian
+        </h1>
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
         
@@ -22,12 +22,12 @@ const HeroSection = () => {
           <p className="text-muted-foreground">Paletta Mansion, Burlington</p>
         </div>
         
-          <Button 
-            size="lg" 
-            className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-medium shadow-romantic animate-scale-in"
-          >
-            RSVP Now
-          </Button>
+        <Button 
+          size="lg" 
+          className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-semibold shadow-romantic animate-scale-in"
+        >
+          RSVP Now
+        </Button>
         </div>
       </div>
       

@@ -56,7 +56,7 @@ const RegistrySection = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  className="border-rose text-rose hover:bg-rose hover:text-white transition-colors"
+                  className="border-rose text-foreground hover:bg-rose hover:text-rose-foreground font-semibold transition-colors"
                   onClick={() => window.open(registry.url, '_blank')}
                 >
                   View Registry
@@ -75,7 +75,7 @@ const RegistrySection = () => {
             to our adventure fund, we've set up a special honeymoon registry.
           </p>
           <Button 
-            className="bg-champagne hover:bg-champagne/90 text-champagne-foreground font-medium shadow-romantic"
+            className="bg-champagne hover:bg-champagne/90 text-champagne-foreground font-semibold shadow-romantic"
           >
             Contribute to Honeymoon
           </Button>

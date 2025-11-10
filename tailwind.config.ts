@@ -55,6 +55,7 @@ export default {
         rose: {
           DEFAULT: "hsl(var(--rose))",
           light: "hsl(var(--rose-light))",
+          foreground: "hsl(var(--rose-foreground))",
         },
         sage: {
           DEFAULT: "hsl(var(--sage))",
@@ -63,6 +64,7 @@ export default {
         champagne: {
           DEFAULT: "hsl(var(--champagne))",
           light: "hsl(var(--champagne-light))",
+          foreground: "hsl(var(--champagne-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
