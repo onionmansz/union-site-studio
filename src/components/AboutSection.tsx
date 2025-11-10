@@ -12,7 +12,7 @@ const AboutSection = () => {
               <h3 className="font-serif text-2xl font-semibold text-rose mb-3">How We Met</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Our paths crossed at a coffee shop in downtown San Francisco on a rainy Tuesday morning. 
-                Sarah was reading her favorite novel while Michael was sketching architectural designs. 
+                Genna was reading her favorite novel while Julian was sketching architectural designs. 
                 A shared love for creativity sparked our first conversation.
               </p>
             </div>
@@ -20,8 +20,8 @@ const AboutSection = () => {
             <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
               <h3 className="font-serif text-2xl font-semibold text-sage mb-3">The Proposal</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Three years later, during a sunset hike at our favorite trail, Michael got down on one knee 
-                with a ring he designed himself. Sarah said yes before he could even finish asking the question!
+                Three years later, during a sunset hike at our favorite trail, Julian got down on one knee 
+                with a ring he designed himself. Genna said yes before he could even finish asking the question!
               </p>
             </div>
           </div>
@@ -40,7 +40,7 @@ const AboutSection = () => {
                   Now we can't wait to make it official and celebrate with all of you!"
                 </p>
                 <div className="mt-4 text-sm text-sage font-medium">
-                  — Sarah & Michael
+                  — Genna & Julian
                 </div>
               </div>
             </div>

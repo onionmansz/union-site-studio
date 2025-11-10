@@ -85,7 +85,7 @@ const RegistrySection = () => {
           <p className="text-muted-foreground italic">
             "The best gifts are those that come from the heart. Thank you for being part of our special day!"
           </p>
-          <p className="text-sage font-medium mt-2">— Sarah & Michael</p>
+          <p className="text-sage font-medium mt-2">— Genna & Julian</p>
         </div>
       </div>
     </section>

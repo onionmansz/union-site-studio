@@ -28,7 +28,7 @@ All colors MUST be HSL.
 
     /* Soft Cream */
     --muted: 45 44% 92%;
-    --muted-foreground: 0 0% 20%;
+    --muted-foreground: 0 0% 10%;
 
     /* Light Cream */
     --accent: 50 50% 90%;
