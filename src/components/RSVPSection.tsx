@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Fuse from "fuse.js";
+import { z } from "zod";
 
 interface GuestListMember {
   id: string;
@@ -15,6 +16,13 @@ interface GuestListMember {
   email: string | null;
   party_id: string;
 }
+
+const rsvpSchema = z.object({
+  guest_list_id: z.string().uuid("Invalid guest ID"),
+  dietary_restrictions: z.string().max(500, "Dietary restrictions must be less than 500 characters").optional().nullable(),
+  message: z.string().max(1000, "Message must be less than 1000 characters").optional().nullable(),
+  attendance: z.literal("attending"),
+});
 
 const RSVPSection = () => {
   const [searchName, setSearchName] = useState("");
@@ -109,10 +117,24 @@ const RSVPSection = () => {
     // Create RSVPs for selected guests
     const rsvpsToInsert = selectedGuests.map(guestId => ({
       guest_list_id: guestId,
-      attendance: 'attending',
+      attendance: 'attending' as const,
       dietary_restrictions: dietaryRestrictions[guestId] || null,
       message: message || null,
     }));
+
+    // Validate each RSVP with zod schema
+    try {
+      rsvpsToInsert.forEach(rsvp => rsvpSchema.parse(rsvp));
+    } catch (validationError) {
+      if (validationError instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: validationError.errors[0].message,
+          variant: "destructive",
+        });
+      }
+      return;
+    }
 
     const { error } = await supabase.from('rsvps').insert(rsvpsToInsert);
 

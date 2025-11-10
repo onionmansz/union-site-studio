@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Trash2, Plus, Users } from "lucide-react";
+import { z } from "zod";
 
 interface Guest {
   id: string;
@@ -13,6 +14,12 @@ interface Guest {
   name: string;
   email: string | null;
 }
+
+const guestSchema = z.object({
+  party_id: z.string().uuid("Invalid party ID"),
+  name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters").optional().nullable().or(z.literal("")),
+});
 
 const GuestListManager = () => {
   const [guests, setGuests] = useState<Guest[]>([]);
@@ -64,23 +71,30 @@ const GuestListManager = () => {
   const handleAddGuest = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!newGuest.name.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please enter a guest name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     // Use selected party_id or generate a new one
     const partyId = newGuest.party_id || crypto.randomUUID();
 
-    const { error } = await supabase.from('guest_list').insert({
+    const guestData = {
       party_id: partyId,
       name: newGuest.name.trim(),
       email: newGuest.email.trim() || null,
-    });
+    };
+
+    // Validate with zod schema
+    try {
+      guestSchema.parse(guestData);
+    } catch (validationError) {
+      if (validationError instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: validationError.errors[0].message,
+          variant: "destructive",
+        });
+      }
+      return;
+    }
+
+    const { error } = await supabase.from('guest_list').insert(guestData);
 
     if (error) {
       toast({
