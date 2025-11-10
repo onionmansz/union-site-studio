@@ -10,7 +10,7 @@ const Footer = () => {
           </h3>
           <div className="w-16 h-px bg-champagne mx-auto mb-6" />
           <p className="text-lg font-light">
-            June 15th, 2024 • Garden Grove Estate, California
+            April 25th, 2026 • Paletta Mansion, Burlington
           </p>
         </div>
         

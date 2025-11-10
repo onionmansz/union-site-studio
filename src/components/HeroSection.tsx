@@ -17,8 +17,8 @@ const HeroSection = () => {
         </p>
         
         <div className="text-lg md:text-xl text-foreground mb-12 animate-fade-in-up">
-          <p className="font-serif italic">June 15th, 2024</p>
-          <p className="text-muted-foreground">Garden Grove Estate, California</p>
+          <p className="font-serif italic">April 25th, 2026</p>
+          <p className="text-muted-foreground">Paletta Mansion, Burlington</p>
         </div>
         
         <Button 
