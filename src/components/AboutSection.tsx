@@ -9,7 +9,7 @@ const AboutSection = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-left">
             <div className="animate-fade-in-up">
-              <h3 className="font-serif text-2xl font-semibold text-rose mb-3">How We Met</h3>
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">How We Met</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Our paths crossed at a coffee shop in downtown San Francisco on a rainy Tuesday morning. 
                 Genna was reading her favorite novel while Julian was sketching architectural designs. 
@@ -18,7 +18,7 @@ const AboutSection = () => {
             </div>
             
             <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              <h3 className="font-serif text-2xl font-semibold text-sage mb-3">The Proposal</h3>
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">The Proposal</h3>
               <p className="text-muted-foreground leading-relaxed">
                 Three years later, during a sunset hike at our favorite trail, Julian got down on one knee 
                 with a ring he designed himself. Genna said yes before he could even finish asking the question!
