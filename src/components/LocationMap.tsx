@@ -88,7 +88,7 @@ const LocationMap = () => {
           Open in Google Maps
         </a>
         <a
-          href="https://www.openstreetmap.org/?mlat=43.3255&mlon=-79.8011#map=15/43.3255/-79.8011"
+          href="https://www.openstreetmap.org/?mlat=43.352867&mlon=-79.753141#map=15/43.352867/-79.753141"
           target="_blank"
           rel="noopener noreferrer"
           className="text-rose hover:text-rose/80 font-medium underline"
