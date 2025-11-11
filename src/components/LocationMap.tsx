@@ -23,8 +23,8 @@ const LocationMap = () => {
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
-    // Initialize map centered on Napa Valley
-    map.current = L.map(mapContainer.current).setView([38.2975, -122.2869], 13);
+    // Initialize map centered on Paletta Mansion, Burlington
+    map.current = L.map(mapContainer.current).setView([43.3255, -79.8011], 15);
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -33,8 +33,8 @@ const LocationMap = () => {
     }).addTo(map.current);
 
     // Add marker for the venue
-    const marker = L.marker([38.2975, -122.2869]).addTo(map.current);
-    marker.bindPopup('<b>Garden Grove Estate</b><br>123 Vineyard Lane<br>Napa Valley, CA').openPopup();
+    const marker = L.marker([43.3255, -79.8011]).addTo(map.current);
+    marker.bindPopup('<b>Paletta Mansion</b><br>4250 Lakeshore Rd<br>Burlington, ON L7L 1A6').openPopup();
 
     // Cleanup
     return () => {
@@ -50,20 +50,50 @@ const LocationMap = () => {
           <MapPin className="w-6 h-6 text-rose" />
           Venue Location
         </h3>
-        <p className="text-muted-foreground">Garden Grove Estate, Napa Valley</p>
+        <p className="text-muted-foreground">Paletta Mansion, Burlington</p>
+        <p className="text-sm text-muted-foreground">4250 Lakeshore Rd, Burlington, ON L7L 1A6</p>
       </div>
-      <div 
-        ref={mapContainer} 
-        className="w-full h-[400px] rounded-lg shadow-elegant border border-sage/20"
-      />
-      <div className="mt-4 text-center">
+      
+      {/* OpenStreetMap */}
+      <div className="mb-6">
+        <p className="text-sm font-medium text-sage mb-2 text-center">OpenStreetMap View</p>
+        <div 
+          ref={mapContainer} 
+          className="w-full h-[400px] rounded-lg shadow-elegant border border-sage/20"
+        />
+      </div>
+
+      {/* Google Maps */}
+      <div className="mb-6">
+        <p className="text-sm font-medium text-sage mb-2 text-center">Google Maps View</p>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.7845234567!2d-79.8033!3d43.3255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882c9c3c2c9c0001%3A0x1234567890abcdef!2sPaletta%20Mansion!5e0!3m2!1sen!2sca!4v1234567890"
+          width="100%"
+          height="400"
+          style={{ border: 0 }}
+          allowFullScreen
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="rounded-lg shadow-elegant border border-sage/20"
+        />
+      </div>
+
+      <div className="mt-4 text-center flex gap-4 justify-center">
         <a
-          href="https://www.google.com/maps/search/?api=1&query=Napa+Valley+CA"
+          href="https://www.google.com/maps/search/?api=1&query=Paletta+Mansion+Burlington+ON"
           target="_blank"
           rel="noopener noreferrer"
           className="text-rose hover:text-rose/80 font-medium underline"
         >
           Open in Google Maps
+        </a>
+        <a
+          href="https://www.openstreetmap.org/?mlat=43.3255&mlon=-79.8011#map=15/43.3255/-79.8011"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-rose hover:text-rose/80 font-medium underline"
+        >
+          Open in OpenStreetMap
         </a>
       </div>
     </div>

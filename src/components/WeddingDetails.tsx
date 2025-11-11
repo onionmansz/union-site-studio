@@ -6,8 +6,8 @@ const WeddingDetails = () => {
     {
       title: "Ceremony",
       time: "4:00 PM",
-      location: "Garden Grove Estate",
-      address: "123 Vineyard Lane, Napa Valley, CA",
+      location: "Paletta Mansion",
+      address: "4250 Lakeshore Rd, Burlington, ON L7L 1A6",
       icon: "🌸"
     },
     {
