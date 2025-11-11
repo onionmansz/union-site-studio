@@ -7,7 +7,7 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-elegant">
-        <h1 className="font-serif text-6xl md:text-8xl font-bold text-foreground mb-6 tracking-wide drop-shadow-lg">
+        <h1 className="font-serif text-6xl md:text-8xl font-bold text-sage mb-6 tracking-wide drop-shadow-lg">
           Genna <span className="text-rose font-extrabold">&</span> Julian
         </h1>
         
@@ -17,7 +17,7 @@ const HeroSection = () => {
           Together with our families, we invite you to celebrate our love story
         </p>
         
-        <div className="text-lg md:text-xl text-foreground mb-12 animate-fade-in-up">
+        <div className="text-lg md:text-xl text-sage mb-12 animate-fade-in-up">
           <p className="font-serif italic">April 25th, 2026</p>
           <p className="text-muted-foreground">Paletta Mansion, Burlington</p>
         </div>

@@ -2,7 +2,7 @@ const AboutSection = () => {
   return (
     <section className="py-20 px-6 bg-gradient-romantic">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-16">
+        <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-16">
           Our Love Story
         </h2>
         
@@ -32,7 +32,7 @@ const AboutSection = () => {
                 <div className="w-16 h-16 bg-champagne rounded-full mx-auto mb-4 flex items-center justify-center">
                   <span className="text-2xl">💕</span>
                 </div>
-                <h4 className="font-serif text-xl font-semibold text-foreground mb-2">
+                <h4 className="font-serif text-xl font-semibold text-sage mb-2">
                   Together for 5 years
                 </h4>
                 <p className="text-muted-foreground">

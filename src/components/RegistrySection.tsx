@@ -27,7 +27,7 @@ const RegistrySection = () => {
     <section className="py-20 px-6 bg-background">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-6">
             Gift Registry
           </h2>
           <div className="w-24 h-px bg-champagne mx-auto mb-8" />
@@ -48,7 +48,7 @@ const RegistrySection = () => {
                 <div className={`w-16 h-16 ${registry.color} rounded-full mx-auto mb-6 flex items-center justify-center`}>
                   <span className="text-white text-2xl">🎁</span>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
+                <h3 className="font-serif text-xl font-semibold text-sage mb-3">
                   {registry.name}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-6">
@@ -56,7 +56,7 @@ const RegistrySection = () => {
                 </p>
                 <Button 
                   variant="outline"
-                  className="border-rose text-foreground hover:bg-rose hover:text-rose-foreground font-semibold transition-colors"
+                  className="border-rose text-sage hover:bg-rose hover:text-rose-foreground font-semibold transition-colors"
                   onClick={() => window.open(registry.url, '_blank')}
                 >
                   View Registry
@@ -67,7 +67,7 @@ const RegistrySection = () => {
         </div>
 
         <div className="text-center bg-sage-light p-8 rounded-lg animate-scale-in">
-          <h3 className="font-serif text-2xl font-semibold text-foreground mb-4">
+          <h3 className="font-serif text-2xl font-semibold text-sage mb-4">
             Honeymoon Fund
           </h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
