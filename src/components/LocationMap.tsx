@@ -14,7 +14,7 @@ const LocationMap = () => {
       </div>
       
       <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.785!2d-79.8033!3d43.3255!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882c9c3c2c9c0001%3A0x1234567890abcdef!2sPaletta%20Mansion!5e0!3m2!1sen!2sca!4v1234567890&markers=43.3255,-79.8011"
+        src="https://maps.google.com/maps?q=43.3255,-79.8011&hl=en&z=15&output=embed"
         width="100%"
         height="450"
         style={{ border: 0 }}
