@@ -161,7 +161,7 @@ const RSVPSection = () => {
         body: {
           guests: guestDetails,
           message: message || undefined,
-          recipientEmail: 'your-email@example.com', // Replace with your email
+          recipientEmail: 'julian3216@gmail.com',
         },
       });
     } catch (emailError) {
