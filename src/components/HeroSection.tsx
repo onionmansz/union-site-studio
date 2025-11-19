@@ -2,6 +2,13 @@ import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/wedding-hero.jpg";
 
 const HeroSection = () => {
+  const scrollToRSVP = () => {
+    const rsvpSection = document.getElementById('rsvp-section');
+    if (rsvpSection) {
+      rsvpSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-background">
       {/* Content */}
@@ -24,6 +31,7 @@ const HeroSection = () => {
         
         <Button 
           size="lg" 
+          onClick={scrollToRSVP}
           className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-semibold shadow-romantic animate-scale-in"
         >
           RSVP Now
