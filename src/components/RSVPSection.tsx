@@ -192,7 +192,7 @@ const RSVPSection = () => {
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-romantic">
+    <section id="rsvp-section" className="py-20 px-6 bg-gradient-romantic">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-6">
