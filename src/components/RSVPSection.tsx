@@ -147,6 +147,28 @@ const RSVPSection = () => {
       return;
     }
 
+    // Send email notification
+    try {
+      const guestDetails = selectedGuests.map(guestId => {
+        const guest = partyMembers.find(g => g.id === guestId);
+        return {
+          name: guest?.name || 'Unknown',
+          dietaryRestrictions: dietaryRestrictions[guestId] || undefined,
+        };
+      });
+
+      await supabase.functions.invoke('send-rsvp-email', {
+        body: {
+          guests: guestDetails,
+          message: message || undefined,
+          recipientEmail: 'your-email@example.com', // Replace with your email
+        },
+      });
+    } catch (emailError) {
+      console.error('Failed to send email notification:', emailError);
+      // Don't fail the RSVP if email fails
+    }
+
     toast({
       title: "RSVP Received! 💕",
       description: "Thank you for your response. We'll send you more details soon!",
