@@ -14,7 +14,7 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-elegant">
-        <h1 className="font-script text-6xl md:text-8xl text-sage mb-6 tracking-wide drop-shadow-lg">
+        <h1 className="font-script font-bold text-6xl md:text-8xl text-sage mb-6 tracking-wide drop-shadow-lg">
           Genna <span className="font-script text-rose">&</span> Julian
         </h1>
         
