@@ -15,7 +15,7 @@ const HeroSection = () => {
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6 animate-fade-in">
         <div className="bg-background/80 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-elegant">
         <h1 className="font-script font-bold text-6xl md:text-8xl text-sage mb-6 tracking-wide drop-shadow-lg">
-          Genna <span className="font-montserrat font-semibold text-2xl md:text-4xl text-rose align-middle uppercase tracking-widest mx-2 md:mx-4">AND</span> Julian
+          Genna <span className="font-serif text-2xl md:text-4xl text-rose align-middle uppercase tracking-widest mx-2 md:mx-4">AND</span> Julian
         </h1>
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
