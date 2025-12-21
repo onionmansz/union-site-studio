@@ -32,9 +32,9 @@ const HeroSection = () => {
         <Button 
           size="lg" 
           onClick={scrollToRSVP}
-          className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-semibold shadow-romantic animate-scale-in"
+          className="bg-foreground hover:bg-foreground/90 text-cream px-8 py-3 text-lg font-semibold shadow-romantic animate-scale-in"
         >
-          RSVP Now
+          Répondez S'il Vous Plaît
         </Button>
         </div>
       </div>
