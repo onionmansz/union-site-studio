@@ -17,7 +17,7 @@ export default {
         'script': ['BN Baxter Script', 'cursive'],
         'serif': ['Playfair Display', 'serif'],
         'sans': ['Inter', 'sans-serif'],
-        'futura': ['Jost', 'sans-serif'],
+        'montserrat': ['Montserrat', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
