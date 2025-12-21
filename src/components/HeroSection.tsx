@@ -21,7 +21,7 @@ const HeroSection = () => {
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
         
         <p className="text-xl md:text-2xl text-muted-foreground font-light mb-8 animate-fade-in-up">
-          Together with our families, we invite you to celebrate our love story
+          You are cordially invited to celebrate our wedding on the twenty-fifth of April, two thousand and twenty-six.
         </p>
         
         <div className="text-lg md:text-xl text-sage mb-12 animate-fade-in-up">
