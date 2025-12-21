@@ -67,6 +67,10 @@ export default {
           light: "hsl(var(--champagne-light))",
           foreground: "hsl(var(--champagne-foreground))",
         },
+        cream: {
+          DEFAULT: "hsl(var(--cream))",
+          foreground: "hsl(var(--cream-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
