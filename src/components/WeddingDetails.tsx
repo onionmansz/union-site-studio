@@ -68,7 +68,7 @@ const WeddingDetails = () => {
           <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
             <div>
               <h4 className="font-semibold text-sage mb-2">RSVP Deadline</h4>
-              <p className="text-muted-foreground">Kindly respond by <span className="text-rose font-semibold">May 1st, 2024</span></p>
+              <p className="text-muted-foreground">Kindly respond by <span className="text-rose font-semibold">February 28th, 2026</span></p>
             </div>
             <div>
               <h4 className="font-semibold text-sage mb-2">Adults-Only Celebration</h4>
@@ -85,10 +85,6 @@ const WeddingDetails = () => {
             <div>
               <h4 className="font-semibold text-sage mb-2">Parking</h4>
               <p className="text-muted-foreground">Complimentary valet parking available at the venue entrance.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sage mb-2">Accommodations</h4>
-              <p className="text-muted-foreground">Room blocks available at nearby hotels. Details in RSVP email.</p>
             </div>
           </div>
         </div>
