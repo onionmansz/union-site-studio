@@ -39,9 +39,6 @@ const HeroSection = () => {
         </div>
       </div>
       
-      {/* Floating elements */}
-      <div className="absolute bottom-32 right-16 w-3 h-3 bg-rose rounded-full opacity-40 animate-float" style={{animationDelay: '1s'}} />
-      <div className="absolute top-1/3 right-8 w-2 h-2 bg-sage rounded-full opacity-50 animate-float" style={{animationDelay: '2s'}} />
     </section>
   );
 };
