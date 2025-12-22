@@ -71,8 +71,8 @@ const WeddingDetails = () => {
               <p className="text-muted-foreground">Kindly respond by <span className="text-rose font-semibold">February 28th, 2026</span></p>
             </div>
             <div>
-              <h4 className="font-semibold text-sage mb-2">Adults-Only Celebration</h4>
-              <p className="text-muted-foreground">We love your little ones, but this is an adults-only celebration. Thank you for understanding!</p>
+              <h4 className="font-semibold text-sage mb-2">Adults-Only Reception</h4>
+              <p className="text-muted-foreground">Little ones are welcome to join us for the ceremony! However, our reception will be an adults-only celebration. Thank you for understanding!</p>
             </div>
             <div>
               <h4 className="font-semibold text-sage mb-2">Dress Code</h4>
