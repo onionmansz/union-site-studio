@@ -62,29 +62,31 @@ const WeddingDetails = () => {
         </div>
 
         <div className="mt-16 text-center bg-sage-light p-8 rounded-lg">
-          <h3 className="font-serif text-2xl font-semibold text-sage mb-4">
+          <h3 className="font-serif text-2xl font-semibold text-sage mb-6">
             Important Information
           </h3>
-          <div className="grid md:grid-cols-2 gap-6 text-left max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 text-center max-w-5xl mx-auto mb-6">
             <div>
               <h4 className="font-semibold text-sage mb-2">RSVP Deadline</h4>
               <p className="text-muted-foreground">Kindly respond by <span className="text-rose font-semibold">February 28th, 2026</span></p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sage mb-2">Adults-Only Reception</h4>
-              <p className="text-muted-foreground">Little ones are welcome to join us for the ceremony! However, our reception will be an adults-only celebration. Thank you for understanding!</p>
             </div>
             <div>
               <h4 className="font-semibold text-sage mb-2">Dress Code</h4>
               <p className="text-muted-foreground">Cocktail attire suggested. Think garden party elegance!</p>
             </div>
             <div>
-              <h4 className="font-semibold text-sage mb-2">Weather</h4>
-              <p className="text-muted-foreground">Outdoor ceremony with indoor backup. Bring a light jacket for evening.</p>
-            </div>
-            <div>
               <h4 className="font-semibold text-sage mb-2">Parking</h4>
               <p className="text-muted-foreground">Complimentary valet parking available at the venue entrance.</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 text-center max-w-3xl mx-auto">
+            <div>
+              <h4 className="font-semibold text-sage mb-2">Adults-Only Reception</h4>
+              <p className="text-muted-foreground">Little ones are welcome to join us for the ceremony! However, our reception will be an adults-only celebration. Thank you for understanding!</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sage mb-2">Weather</h4>
+              <p className="text-muted-foreground">Outdoor ceremony with indoor backup. Bring a light jacket for evening.</p>
             </div>
           </div>
         </div>
