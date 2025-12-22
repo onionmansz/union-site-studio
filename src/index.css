@@ -60,6 +60,9 @@ All colors MUST be HSL.
     --champagne-foreground: 0 0% 0%;
     --cream: 45 44% 94%;
     --cream-foreground: 0 0% 0%;
+    --gold: 43 74% 49%;
+    --gold-light: 43 74% 70%;
+    --gold-foreground: 0 0% 0%;
     
     /* Gradients */
     --gradient-romantic: linear-gradient(135deg, hsl(45 44% 94%), hsl(50 50% 90%));
