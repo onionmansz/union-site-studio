@@ -14,7 +14,7 @@ const LocationMap = () => {
       </div>
       
       <iframe
-        src="https://maps.google.com/maps?q=43.3255,-79.8011&hl=en&z=15&output=embed"
+        src="https://maps.google.com/maps?q=Paletta+Mansion+Burlington+ON&hl=en&z=15&output=embed"
         width="100%"
         height="450"
         style={{ border: 0 }}
