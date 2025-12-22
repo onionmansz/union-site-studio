@@ -120,6 +120,10 @@ export default {
         "float": {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-10px)" }
+        },
+        "float-heart": {
+          "0%, 100%": { transform: "translateY(0px) rotate(-5deg)", opacity: "0.3" },
+          "50%": { transform: "translateY(-15px) rotate(5deg)", opacity: "0.5" }
         }
       },
       animation: {
@@ -129,6 +133,7 @@ export default {
         "fade-in-up": "fade-in-up 0.8s ease-out",
         "scale-in": "scale-in 0.4s ease-out",
         "float": "float 3s ease-in-out infinite",
+        "float-heart": "float-heart 4s ease-in-out infinite",
       },
     },
   },

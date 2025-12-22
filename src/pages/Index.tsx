@@ -4,12 +4,13 @@ import WeddingDetails from "@/components/WeddingDetails";
 import RSVPSection from "@/components/RSVPSection";
 import RegistrySection from "@/components/RegistrySection";
 import Footer from "@/components/Footer";
+import FloatingHearts from "@/components/FloatingHearts";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      <FloatingHearts />
       <HeroSection />
-      {/* <AboutSection /> */}
       <WeddingDetails />
       <RSVPSection />
       <RegistrySection />
