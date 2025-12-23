@@ -5,13 +5,9 @@ const Footer = () => {
     <footer className="bg-foreground text-background py-12 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <h3 className="font-serif text-3xl font-bold mb-4">
+          <h3 className="font-serif text-3xl font-bold">
             Genna <span className="text-rose font-extrabold">&</span> Julian
           </h3>
-          <div className="w-16 h-px bg-champagne mx-auto mb-6" />
-          <p className="text-lg font-light">
-            April 25th, 2026 • Paletta Mansion, Burlington
-          </p>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 mb-8 text-sm">
@@ -24,7 +20,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">RSVP Deadline</h4>
             <p className="opacity-80">Please respond by</p>
-            <p className="text-rose">May 1st, 2024</p>
+            <p className="text-rose">February 28th, 2026</p>
           </div>
           
           <div>
