@@ -34,12 +34,6 @@ const Footer = () => {
           <p className="text-sm opacity-60">
             Made with love for our special day ❤️
           </p>
-          <Link 
-            to="/auth" 
-            className="text-xs opacity-20 hover:opacity-40 transition-opacity mt-2 inline-block"
-          >
-            Admin
-          </Link>
         </div>
       </div>
     </footer>
