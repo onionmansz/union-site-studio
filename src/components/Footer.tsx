@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
           <h3 className="font-script text-4xl md:text-5xl text-sage tracking-wide">
-            Genna <span className="font-serif text-sm md:text-base text-rose align-middle uppercase tracking-widest"> and </span> Julian
+            Genna <span className="font-serif text-sm md:text-base text-rose align-middle uppercase tracking-widest mx-2">and</span> Julian
           </h3>
         </div>
         
