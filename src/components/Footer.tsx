@@ -36,7 +36,7 @@ const Footer = () => {
           </p>
           <Link 
             to="/auth" 
-            className="text-xs opacity-40 hover:opacity-60 transition-opacity mt-2 inline-block"
+            className="text-xs opacity-20 hover:opacity-40 transition-opacity mt-2 inline-block"
           >
             Admin
           </Link>
