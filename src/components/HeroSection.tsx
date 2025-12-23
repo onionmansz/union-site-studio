@@ -20,7 +20,7 @@ const HeroSection = () => {
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
         
-        <p className="text-xl md:text-2xl text-muted-foreground font-light mb-8 animate-fade-in-up">
+        <p className="font-script text-2xl md:text-3xl text-muted-foreground mb-8 animate-fade-in-up">
           You are cordially invited to celebrate our wedding on the twenty-fifth of April, two thousand and twenty-six.
         </p>
         
