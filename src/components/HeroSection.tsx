@@ -25,7 +25,7 @@ const HeroSection = () => {
         </p>
         
         <div className="text-lg md:text-xl text-sage mb-12 animate-fade-in-up">
-          <p className="font-serif italic">Paletta Mansion</p>
+          <p className="font-script text-3xl md:text-4xl">Paletta Mansion</p>
           <p className="text-muted-foreground">4250 Lakeshore Road, Burlington</p>
         </div>
         
