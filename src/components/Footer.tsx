@@ -5,8 +5,8 @@ const Footer = () => {
     <footer className="bg-foreground text-background py-12 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <h3 className="font-serif text-3xl font-bold">
-            Genna <span className="text-rose font-extrabold">&</span> Julian
+          <h3 className="font-script text-4xl md:text-5xl text-sage tracking-wide">
+            Genna<span className="font-serif text-sm md:text-base text-rose align-middle uppercase tracking-widest px-2"> AND </span>Julian
           </h3>
         </div>
         
