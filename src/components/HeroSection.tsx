@@ -20,19 +20,19 @@ const HeroSection = () => {
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
         
-        <p className="font-script text-2xl md:text-3xl text-muted-foreground mb-8 animate-fade-in-up">
+        <p className="text-xl md:text-2xl text-muted-foreground font-light mb-8 animate-fade-in-up">
           You are cordially invited to celebrate our wedding on the twenty-fifth of April, two thousand and twenty-six.
         </p>
         
         <div className="text-lg md:text-xl text-sage mb-12 animate-fade-in-up">
-          <p className="font-script text-3xl md:text-4xl">Paletta Mansion</p>
-          <p className="font-script text-xl md:text-2xl text-muted-foreground">4250 Lakeshore Road, Burlington</p>
+          <p className="font-serif italic">Paletta Mansion</p>
+          <p className="text-muted-foreground">4250 Lakeshore Road, Burlington</p>
         </div>
         
         <Button 
           size="lg" 
           onClick={scrollToRSVP}
-          className="font-script bg-foreground hover:bg-foreground/90 text-background px-8 py-3 text-xl md:text-2xl shadow-romantic animate-scale-in"
+          className="bg-foreground hover:bg-foreground/90 text-background px-8 py-3 text-lg font-semibold shadow-romantic animate-scale-in"
         >
           Répondez S'il Vous Plaît
         </Button>
