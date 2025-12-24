@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/wedding-hero.jpg";
-import namesImage from "@/assets/genna-and-julian.png";
+import namesImage from "@/assets/genna-and-julian-names.jpeg";
 
 const HeroSection = () => {
   const scrollToRSVP = () => {
@@ -18,7 +18,7 @@ const HeroSection = () => {
         <img 
           src={namesImage} 
           alt="Genna and Julian" 
-          className="w-full max-w-md md:max-w-lg mx-auto mb-6"
+          className="w-full max-w-md md:max-w-lg mx-auto mb-6 mix-blend-multiply"
         />
         
         <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
