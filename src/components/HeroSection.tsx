@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/wedding-hero.jpg";
-import namesImage from "@/assets/genna-and-julian.jpeg";
+import namesImage from "@/assets/genna-and-julian.png";
 
 const HeroSection = () => {
   const scrollToRSVP = () => {
