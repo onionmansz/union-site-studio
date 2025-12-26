@@ -62,19 +62,22 @@ const HeroSection = () => {
         </div>
 
         {/* Countdown Timer */}
-        <div className="flex justify-center gap-4 md:gap-8 mb-10 animate-fade-in-up">
+        <div className="flex justify-center items-center gap-3 md:gap-6 mb-10 animate-fade-in-up">
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.days}</div>
             <div className="text-sm text-foreground/70 uppercase tracking-wide">Days</div>
           </div>
+          <span className="text-2xl md:text-3xl text-foreground/40 font-light self-start mt-1">:</span>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.hours}</div>
             <div className="text-sm text-foreground/70 uppercase tracking-wide">Hours</div>
           </div>
+          <span className="text-2xl md:text-3xl text-foreground/40 font-light self-start mt-1">:</span>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.minutes}</div>
             <div className="text-sm text-foreground/70 uppercase tracking-wide">Minutes</div>
           </div>
+          <span className="text-2xl md:text-3xl text-foreground/40 font-light self-start mt-1">:</span>
           <div className="text-center">
             <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.seconds}</div>
             <div className="text-sm text-foreground/70 uppercase tracking-wide">Seconds</div>
