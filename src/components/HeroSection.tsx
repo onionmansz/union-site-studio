@@ -21,15 +21,13 @@ const HeroSection = () => {
           className="w-full max-w-md md:max-w-lg mx-auto mb-6"
         />
         
-        <div className="w-24 h-px bg-champagne mx-auto mb-8 animate-scale-in" />
-        
-        <p className="text-xl md:text-2xl text-muted-foreground font-light mb-8 animate-fade-in-up">
+        <p className="text-xl md:text-2xl text-foreground font-light mb-8 animate-fade-in-up">
           You are cordially invited to celebrate our wedding on the twenty-fifth of April, two thousand and twenty-six.
         </p>
         
-        <div className="text-lg md:text-xl text-sage mb-12 animate-fade-in-up">
+        <div className="text-lg md:text-xl text-foreground mb-12 animate-fade-in-up">
           <p className="font-serif italic">Paletta Mansion</p>
-          <p className="text-muted-foreground">4250 Lakeshore Road, Burlington</p>
+          <p>4250 Lakeshore Road, Burlington</p>
         </div>
         
         <Button 

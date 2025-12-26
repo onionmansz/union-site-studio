@@ -195,18 +195,17 @@ const RSVPSection = () => {
     <section id="rsvp-section" className="py-20 px-6 bg-gradient-romantic">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-6">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
             RSVP
           </h2>
-          <div className="w-24 h-px bg-champagne mx-auto mb-8" />
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-foreground">
             Please let us know if you can celebrate with us!
           </p>
         </div>
 
         <Card className="bg-card/95 backdrop-blur-sm border-0 shadow-elegant animate-scale-in">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="font-serif text-2xl text-sage">
+            <CardTitle className="font-serif text-2xl text-foreground">
               We Can't Wait to Celebrate With You!
             </CardTitle>
           </CardHeader>
@@ -214,7 +213,7 @@ const RSVPSection = () => {
             {!showPartyForm ? (
               <form onSubmit={handleNameSearch} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="searchName" className="text-sage font-medium">
+                  <Label htmlFor="searchName" className="text-foreground font-medium">
                     Enter Your Name *
                   </Label>
                   <Input
@@ -225,7 +224,7 @@ const RSVPSection = () => {
                     className="border-sage/30 focus:border-rose"
                     placeholder="Your full name"
                   />
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     We'll look up your party and show everyone invited with you.
                   </p>
                 </div>
@@ -242,10 +241,10 @@ const RSVPSection = () => {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
-                  <Label className="text-sage font-medium text-lg">
+                  <Label className="text-foreground font-medium text-lg">
                     Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground">
                     Select who will be attending:
                   </p>
                   
@@ -262,19 +261,19 @@ const RSVPSection = () => {
                           <div className="flex-1">
                             <label
                               htmlFor={member.id}
-                              className="text-sage font-medium cursor-pointer block"
+                              className="text-foreground font-medium cursor-pointer block"
                             >
                               {member.name}
                             </label>
                             {member.email && (
-                              <p className="text-sm text-muted-foreground">{member.email}</p>
+                              <p className="text-sm text-foreground">{member.email}</p>
                             )}
                           </div>
                         </div>
                         
                         {selectedGuests.includes(member.id) && (
                           <div className="ml-8 animate-fade-in">
-                            <Label htmlFor={`dietary-${member.id}`} className="text-sm text-muted-foreground">
+                            <Label htmlFor={`dietary-${member.id}`} className="text-sm text-foreground">
                               Dietary Restrictions
                             </Label>
                              <Input
@@ -296,7 +295,7 @@ const RSVPSection = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message" className="text-sage font-medium">
+                  <Label htmlFor="message" className="text-foreground font-medium">
                     Message for the Happy Couple
                   </Label>
                   <Textarea
