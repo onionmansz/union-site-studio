@@ -50,9 +50,6 @@ const WeddingDetails = () => {
           ))}
         </div>
 
-
-        <LocationMap />
-
         <div className="mt-16 text-center bg-sage-light p-8 rounded-lg">
           <h3 className="font-serif text-2xl font-semibold text-foreground mb-6">
             Important Information
@@ -82,6 +79,8 @@ const WeddingDetails = () => {
             </div>
           </div>
         </div>
+
+        <LocationMap />
       </div>
     </section>
   );
