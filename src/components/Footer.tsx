@@ -1,4 +1,4 @@
-import swansImage from "@/assets/swans.jpg";
+import swansImage from "@/assets/swans.png";
 
 const Footer = () => {
   return (
