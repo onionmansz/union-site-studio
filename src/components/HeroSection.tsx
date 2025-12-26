@@ -1,8 +1,39 @@
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/wedding-hero.jpg";
 import namesImage from "@/assets/genna-julian-names.png";
+import { useState, useEffect } from "react";
 
 const HeroSection = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  useEffect(() => {
+    const weddingDate = new Date('2026-04-25T16:00:00');
+    
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = weddingDate.getTime() - now.getTime();
+      
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+
   const scrollToRSVP = () => {
     const rsvpSection = document.getElementById('rsvp-section');
     if (rsvpSection) {
@@ -25,9 +56,29 @@ const HeroSection = () => {
           You are cordially invited to celebrate our wedding on the twenty-fifth of April, two thousand and twenty-six.
         </p>
         
-        <div className="text-lg md:text-xl text-foreground mb-12 animate-fade-in-up">
+        <div className="text-lg md:text-xl text-foreground mb-8 animate-fade-in-up">
           <p className="font-serif italic">Paletta Mansion</p>
           <p>4250 Lakeshore Road, Burlington</p>
+        </div>
+
+        {/* Countdown Timer */}
+        <div className="flex justify-center gap-4 md:gap-8 mb-10 animate-fade-in-up">
+          <div className="text-center">
+            <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.days}</div>
+            <div className="text-sm text-foreground/70 uppercase tracking-wide">Days</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.hours}</div>
+            <div className="text-sm text-foreground/70 uppercase tracking-wide">Hours</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.minutes}</div>
+            <div className="text-sm text-foreground/70 uppercase tracking-wide">Minutes</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.seconds}</div>
+            <div className="text-sm text-foreground/70 uppercase tracking-wide">Seconds</div>
+          </div>
         </div>
         
         <Button 
