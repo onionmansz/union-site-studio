@@ -16,13 +16,13 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">Contact</h4>
             <p className="opacity-80">Questions? Email us at</p>
-            <p className="text-champagne">GennaandJulian@gmail.com</p>
+            <p className="text-foreground font-semibold">GennaandJulian@gmail.com</p>
           </div>
           
           <div>
             <h4 className="font-semibold mb-2">RSVP Deadline</h4>
             <p className="opacity-80">Please respond by</p>
-            <p className="text-rose">February 28th, 2026</p>
+            <p className="text-foreground font-semibold">February 28th, 2026</p>
           </div>
         </div>
       </div>
