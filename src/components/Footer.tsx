@@ -1,20 +1,22 @@
-import { Link } from "react-router-dom";
+import swansImage from "@/assets/swans.jpg";
 
 const Footer = () => {
   return (
     <footer className="bg-foreground text-background py-12 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
-          <h3 className="font-script text-4xl md:text-5xl text-sage tracking-wide">
-            Genna<span className="font-script text-2xl md:text-3xl text-sage align-middle pl-2 pr-5">and</span>Julian
-          </h3>
+          <img 
+            src={swansImage} 
+            alt="Genna and Julian" 
+            className="h-24 md:h-32 mx-auto object-contain"
+          />
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8 mb-8 text-sm">
+        <div className="grid md:grid-cols-2 gap-8 mb-8 text-sm max-w-xl mx-auto">
           <div>
             <h4 className="font-semibold mb-2">Contact</h4>
             <p className="opacity-80">Questions? Email us at</p>
-            <p className="text-champagne">hello@vajayjayandgeeeners.com</p>
+            <p className="text-champagne">GennaandJulian@gmail.com</p>
           </div>
           
           <div>
@@ -22,18 +24,6 @@ const Footer = () => {
             <p className="opacity-80">Please respond by</p>
             <p className="text-rose">February 28th, 2026</p>
           </div>
-          
-          <div>
-            <h4 className="font-semibold mb-2">Follow Our Journey</h4>
-            <p className="opacity-80">Wedding hashtag:</p>
-            <p className="text-sage">#VajayjayAndGeenersSayIDo</p>
-          </div>
-        </div>
-        
-        <div className="border-t border-background/20 pt-6">
-          <p className="text-sm opacity-60">
-            Made with love for our special day ❤️
-          </p>
         </div>
       </div>
     </footer>
