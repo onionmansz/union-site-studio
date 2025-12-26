@@ -15,8 +15,8 @@ export default {
     extend: {
       fontFamily: {
         'script': ['BN Baxter Script', 'cursive'],
-        'serif': ['Playfair Display', 'serif'],
-        'sans': ['Inter', 'sans-serif'],
+        'serif': ['Sabon', 'serif'],
+        'sans': ['Sabon', 'serif'],
         'montserrat': ['Montserrat', 'sans-serif'],
       },
       colors: {

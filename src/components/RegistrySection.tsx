@@ -27,11 +27,10 @@ const RegistrySection = () => {
     <section className="py-20 px-6 bg-background">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-6">
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
             Gift Registry
           </h2>
-          <div className="w-24 h-px bg-champagne mx-auto mb-8" />
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-foreground max-w-2xl mx-auto">
             Your presence is the greatest gift, but if you'd like to celebrate with a gift, 
             we've registered at a few of our favorite places
           </p>
@@ -48,15 +47,15 @@ const RegistrySection = () => {
                 <div className={`w-16 h-16 ${registry.color} rounded-full mx-auto mb-6 flex items-center justify-center`}>
                   <span className="text-white text-2xl">🎁</span>
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-sage mb-3">
+                <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
                   {registry.name}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-6">
+                <p className="text-foreground text-sm mb-6">
                   {registry.description}
                 </p>
                 <Button 
-                  variant="outline"
-                  className="border-rose text-sage hover:bg-rose hover:text-rose-foreground font-semibold transition-colors"
+                  variant="default"
+                  className="bg-rose hover:bg-rose/90 text-rose-foreground font-semibold transition-colors"
                   onClick={() => window.open(registry.url, '_blank')}
                 >
                   View Registry
@@ -67,10 +66,10 @@ const RegistrySection = () => {
         </div>
 
         <div className="text-center bg-sage-light p-8 rounded-lg animate-scale-in">
-          <h3 className="font-serif text-2xl font-semibold text-sage mb-4">
+          <h3 className="font-serif text-2xl font-semibold text-foreground mb-4">
             Honeymoon Fund
           </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-foreground mb-6 max-w-2xl mx-auto">
             We're also saving for our dream honeymoon in Italy! If you'd prefer to contribute 
             to our adventure fund, we've set up a special honeymoon registry.
           </p>
@@ -82,10 +81,10 @@ const RegistrySection = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-muted-foreground italic">
+          <p className="text-foreground italic">
             "The best gifts are those that come from the heart. Thank you for being part of our special day!"
           </p>
-          <p className="text-sage font-medium mt-2">— Genna & Julian</p>
+          <p className="text-foreground font-medium mt-2">— Genna & Julian</p>
         </div>
       </div>
     </section>

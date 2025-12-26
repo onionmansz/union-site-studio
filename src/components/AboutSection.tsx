@@ -2,15 +2,15 @@ const AboutSection = () => {
   return (
     <section className="py-20 px-6 bg-gradient-romantic">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="font-serif text-4xl md:text-5xl font-bold text-sage mb-16">
+        <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-16">
           Our Love Story
         </h2>
         
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-left">
             <div className="animate-fade-in-up">
-              <h3 className="font-serif text-2xl font-semibold text-sage mb-3">How We Met</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">How We Met</h3>
+              <p className="text-foreground leading-relaxed">
                 Our paths crossed at a coffee shop in downtown San Francisco on a rainy Tuesday morning. 
                 Genna was reading her favorite novel while Julian was sketching architectural designs. 
                 A shared love for creativity sparked our first conversation.
@@ -18,8 +18,8 @@ const AboutSection = () => {
             </div>
             
             <div className="animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              <h3 className="font-serif text-2xl font-semibold text-sage mb-3">The Proposal</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="font-serif text-2xl font-semibold text-foreground mb-3">The Proposal</h3>
+              <p className="text-foreground leading-relaxed">
                 Three years later, during a sunset hike at our favorite trail, Julian got down on one knee 
                 with a ring he designed himself. Genna said yes before he could even finish asking the question!
               </p>
@@ -32,14 +32,14 @@ const AboutSection = () => {
                 <div className="w-16 h-16 bg-champagne rounded-full mx-auto mb-4 flex items-center justify-center">
                   <span className="text-2xl">💕</span>
                 </div>
-                <h4 className="font-serif text-xl font-semibold text-sage mb-2">
+                <h4 className="font-serif text-xl font-semibold text-foreground mb-2">
                   Together for 5 years
                 </h4>
-                <p className="text-muted-foreground">
+                <p className="text-foreground">
                   "We've grown together, laughed together, and built a beautiful life. 
                   Now we can't wait to make it official and celebrate with all of you!"
                 </p>
-                <div className="mt-4 text-sm text-sage font-medium">
+                <div className="mt-4 text-sm text-foreground font-medium">
                   — Genna & Julian
                 </div>
               </div>
