@@ -60,17 +60,17 @@ const WeddingDetails = () => {
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Parking</h4>
-              <p className="text-foreground">Overnight parking available on site. Cars have to be moved 9am next day.</p>
+              <p className="text-foreground">Overnight parking available on site. Cars must be removed by 9:30am the next morning.</p>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6 text-center max-w-3xl mx-auto">
             <div>
               <h4 className="font-semibold text-foreground mb-2">Adults-Only Reception</h4>
-              <p className="text-foreground">Little ones are welcome to join us for the ceremony! However, our reception will be an adults-only celebration. Thank you for understanding!</p>
+              <p className="text-foreground">Our wedding will be an adults-only celebration. Thank you for understanding!</p>
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Weather</h4>
-              <p className="text-foreground">Outdoor ceremony with indoor backup. Bring a light jacket for evening.</p>
+              <p className="text-foreground">Ceremony will be held under a covered porch outdoors.</p>
             </div>
           </div>
         </div>

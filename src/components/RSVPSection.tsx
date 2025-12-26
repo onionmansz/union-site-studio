@@ -204,11 +204,6 @@ const RSVPSection = () => {
         </div>
 
         <Card className="bg-card/95 backdrop-blur-sm border-0 shadow-elegant animate-scale-in">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="font-serif text-2xl text-foreground">
-              We Can't Wait to Celebrate With You!
-            </CardTitle>
-          </CardHeader>
           <CardContent>
             {!showPartyForm ? (
               <form onSubmit={handleNameSearch} className="space-y-6">
