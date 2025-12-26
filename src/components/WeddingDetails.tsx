@@ -56,11 +56,11 @@ const WeddingDetails = () => {
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Dress Code</h4>
-              <p className="text-foreground">Cocktail attire suggested. Think garden party elegance!</p>
+              <p className="text-foreground">Cocktail attire suggested.</p>
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Parking</h4>
-              <p className="text-foreground">Complimentary valet parking available at the venue entrance.</p>
+              <p className="text-foreground">Overnight parking available on site. Cars have to be moved 9am next day.</p>
             </div>
           </div>
           <div className="grid md:grid-cols-2 gap-6 text-center max-w-3xl mx-auto">
