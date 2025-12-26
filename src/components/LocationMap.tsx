@@ -5,7 +5,7 @@ const LocationMap = () => {
   return (
     <div className="mt-16">
       <div className="text-center mb-8">
-        <h3 className="font-serif text-2xl font-semibold text-sage mb-2 flex items-center justify-center gap-2">
+        <h3 className="font-serif text-2xl font-semibold text-foreground mb-2 flex items-center justify-center gap-2">
           <MapPin className="w-6 h-6 text-rose" />
           Venue Location
         </h3>

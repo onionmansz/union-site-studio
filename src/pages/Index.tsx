@@ -12,7 +12,7 @@ const Index = () => {
     <div className="min-h-screen bg-background relative">
       <FloatingElements />
       <HeroSection />
-      <div className="py-4 px-6 bg-background">
+      <div className="px-6 bg-background">
         <img 
           src={palettaMansion} 
           alt="Paletta Mansion illustration" 
