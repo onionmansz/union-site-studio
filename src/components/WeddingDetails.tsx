@@ -79,7 +79,7 @@ const WeddingDetails = () => {
                   href="https://maps.app.goo.gl/oahHDieuEoFREPRt6" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary underline hover:text-primary/80 transition-colors"
+                  className="text-foreground underline hover:text-foreground/80 transition-colors"
                 >
                   Hotel List
                 </a>
