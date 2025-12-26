@@ -81,7 +81,7 @@ const WeddingDetails = () => {
                   rel="noopener noreferrer"
                   className="text-foreground underline hover:text-foreground/80 transition-colors"
                 >
-                  Hotel List
+                  Nearby Hotels list
                 </a>
               </p>
             </div>
