@@ -79,7 +79,7 @@ const HeroSection = () => {
           </div>
           <span className="text-2xl md:text-3xl text-foreground/40 font-light self-start mt-1">:</span>
           <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold text-foreground">{timeLeft.seconds}</div>
+            <div className="text-3xl md:text-4xl font-bold text-foreground animate-pulse">{timeLeft.seconds}</div>
             <div className="text-sm text-foreground/70 uppercase tracking-wide">Seconds</div>
           </div>
         </div>
