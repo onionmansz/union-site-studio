@@ -63,7 +63,7 @@ const WeddingDetails = () => {
               <p className="text-foreground">Overnight parking available on site. Cars must be removed by 9:30am the next morning.</p>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 text-center max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 text-center max-w-5xl mx-auto">
             <div>
               <h4 className="font-semibold text-foreground mb-2">Adults-Only Reception</h4>
               <p className="text-foreground">Our wedding will be an adults-only celebration. Thank you for understanding!</p>
@@ -71,6 +71,19 @@ const WeddingDetails = () => {
             <div>
               <h4 className="font-semibold text-foreground mb-2">Weather</h4>
               <p className="text-foreground">Ceremony will be held under a covered porch outdoors.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-2">Accommodations</h4>
+              <p className="text-foreground">
+                <a 
+                  href="https://maps.app.goo.gl/oahHDieuEoFREPRt6" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary underline hover:text-primary/80 transition-colors"
+                >
+                  Hotel List
+                </a>
+              </p>
             </div>
           </div>
         </div>
