@@ -2,7 +2,7 @@ import swansImage from "@/assets/swans.jpg";
 
 const Footer = () => {
   return (
-    <footer className="bg-foreground text-background py-12 px-6">
+    <footer className="bg-background text-foreground py-12 px-6">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8">
           <img 
