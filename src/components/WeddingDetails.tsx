@@ -4,18 +4,15 @@ const WeddingDetails = () => {
   const details = [
     {
       title: "Ceremony",
-      time: "4:00 PM",
-      icon: "🌸"
+      time: "4:00 PM"
     },
     {
       title: "Cocktail Hour",
-      time: "4:30 PM",
-      icon: "🥂"
+      time: "4:30 PM"
     },
     {
       title: "Reception",
-      time: "5:30 PM",
-      icon: "💃"
+      time: "5:30 PM"
     }
   ];
 
@@ -39,7 +36,6 @@ const WeddingDetails = () => {
               style={{animationDelay: `${index * 0.2}s`}}
             >
               <CardContent className="p-8 text-center">
-                <div className="text-4xl mb-4">{detail.icon}</div>
                 <h3 className="font-serif text-2xl font-semibold text-foreground mb-2">
                   {detail.title}
                 </h3>
