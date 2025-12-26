@@ -5,6 +5,7 @@ import RSVPSection from "@/components/RSVPSection";
 import RegistrySection from "@/components/RegistrySection";
 import Footer from "@/components/Footer";
 import FloatingElements from "@/components/FloatingHearts";
+import LocationMap from "@/components/LocationMap";
 import palettaMansion from "@/assets/paletta-mansion-illustration.png";
 
 const Index = () => {
@@ -21,6 +22,11 @@ const Index = () => {
       </div>
       <WeddingDetails />
       <RSVPSection />
+      <section className="py-20 px-6 bg-background">
+        <div className="max-w-6xl mx-auto">
+          <LocationMap />
+        </div>
+      </section>
       <Footer />
     </div>
   );

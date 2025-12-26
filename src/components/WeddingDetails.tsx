@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import LocationMap from "./LocationMap";
 
 const WeddingDetails = () => {
   const details = [
@@ -79,8 +78,6 @@ const WeddingDetails = () => {
             </div>
           </div>
         </div>
-
-        <LocationMap />
       </div>
     </section>
   );
