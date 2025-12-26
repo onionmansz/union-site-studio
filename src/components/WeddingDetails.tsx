@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
+import weddingRings from "@/assets/wedding-rings.png";
 
 const WeddingDetails = () => {
   const details = [
     {
       title: "Ceremony",
-      time: "4:00 PM"
+      time: "4:00 PM",
+      image: weddingRings
     },
     {
       title: "Cocktail Hour",
@@ -36,6 +38,9 @@ const WeddingDetails = () => {
               style={{animationDelay: `${index * 0.2}s`}}
             >
               <CardContent className="p-8 text-center">
+                {detail.image && (
+                  <img src={detail.image} alt={detail.title} className="w-16 h-16 mx-auto mb-4 object-contain" />
+                )}
                 <h3 className="font-serif text-2xl font-semibold text-foreground mb-2">
                   {detail.title}
                 </h3>
