@@ -170,7 +170,7 @@ const RSVPSection = () => {
     }
 
     toast({
-      title: "RSVP Received! 💕",
+      title: "RSVP Received!",
       description: "Thank you for your response. We'll send you more details soon!",
     });
     
@@ -232,7 +232,7 @@ const RSVPSection = () => {
                 <div className="text-center pt-4">
                   <Button 
                     type="submit"
-                    className="bg-rose hover:bg-rose/90 text-rose-foreground px-8 py-3 text-lg font-medium shadow-romantic"
+                    className="bg-foreground hover:bg-foreground/90 text-background px-8 py-3 text-lg font-medium shadow-romantic"
                   >
                     Find My Party
                   </Button>
