@@ -12,7 +12,7 @@ const Index = () => {
     <div className="min-h-screen bg-background relative">
       <FloatingElements />
       <HeroSection />
-      <div className="py-12 px-6 bg-background">
+      <div className="py-4 px-6 bg-background">
         <img 
           src={palettaMansion} 
           alt="Paletta Mansion illustration" 
@@ -21,7 +21,6 @@ const Index = () => {
       </div>
       <WeddingDetails />
       <RSVPSection />
-      <RegistrySection />
       <Footer />
     </div>
   );
