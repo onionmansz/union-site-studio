@@ -45,6 +45,7 @@ export type Database = {
           dietary_restrictions: string | null
           guest_list_id: string | null
           id: string
+          meal_choice: string | null
           message: string | null
         }
         Insert: {
@@ -53,6 +54,7 @@ export type Database = {
           dietary_restrictions?: string | null
           guest_list_id?: string | null
           id?: string
+          meal_choice?: string | null
           message?: string | null
         }
         Update: {
@@ -61,6 +63,7 @@ export type Database = {
           dietary_restrictions?: string | null
           guest_list_id?: string | null
           id?: string
+          meal_choice?: string | null
           message?: string | null
         }
         Relationships: [

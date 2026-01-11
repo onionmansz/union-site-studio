@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Fuse from "fuse.js";
@@ -17,9 +18,16 @@ interface GuestListMember {
   party_id: string;
 }
 
+const MEAL_CHOICES = [
+  { value: "chicken", label: "Chicken" },
+  { value: "beef", label: "Beef" },
+  { value: "vegetarian", label: "Vegetarian" },
+] as const;
+
 const rsvpSchema = z.object({
   guest_list_id: z.string().uuid("Invalid guest ID"),
   dietary_restrictions: z.string().max(500, "Dietary restrictions must be less than 500 characters").optional().nullable(),
+  meal_choice: z.enum(["chicken", "beef", "vegetarian"], { required_error: "Please select a meal choice" }),
   message: z.string().max(1000, "Message must be less than 1000 characters").optional().nullable(),
   attendance: z.literal("attending"),
 });
@@ -28,6 +36,7 @@ const RSVPSection = () => {
   const [searchName, setSearchName] = useState("");
   const [partyMembers, setPartyMembers] = useState<GuestListMember[]>([]);
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
+  const [mealChoices, setMealChoices] = useState<Record<string, string>>({});
   const [dietaryRestrictions, setDietaryRestrictions] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
@@ -114,10 +123,23 @@ const RSVPSection = () => {
       return;
     }
 
+    // Check that all selected guests have a meal choice
+    const missingMealChoice = selectedGuests.find(guestId => !mealChoices[guestId]);
+    if (missingMealChoice) {
+      const guest = partyMembers.find(g => g.id === missingMealChoice);
+      toast({
+        title: "Missing meal choice",
+        description: `Please select a meal choice for ${guest?.name || 'each guest'}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Create RSVPs for selected guests
     const rsvpsToInsert = selectedGuests.map(guestId => ({
       guest_list_id: guestId,
       attendance: 'attending' as const,
+      meal_choice: mealChoices[guestId] as "chicken" | "beef" | "vegetarian",
       dietary_restrictions: dietaryRestrictions[guestId] || null,
       message: message || null,
     }));
@@ -153,6 +175,7 @@ const RSVPSection = () => {
         const guest = partyMembers.find(g => g.id === guestId);
         return {
           name: guest?.name || 'Unknown',
+          mealChoice: mealChoices[guestId] || undefined,
           dietaryRestrictions: dietaryRestrictions[guestId] || undefined,
         };
       });
@@ -178,6 +201,7 @@ const RSVPSection = () => {
     setSearchName("");
     setPartyMembers([]);
     setSelectedGuests([]);
+    setMealChoices({});
     setDietaryRestrictions({});
     setMessage("");
     setShowPartyForm(false);
@@ -267,21 +291,48 @@ const RSVPSection = () => {
                         </div>
                         
                         {selectedGuests.includes(member.id) && (
-                          <div className="ml-8 animate-fade-in">
-                            <Label htmlFor={`dietary-${member.id}`} className="text-sm text-foreground">
-                              Dietary Restrictions
-                            </Label>
-                             <Input
-                              id={`dietary-${member.id}`}
-                              value={dietaryRestrictions[member.id] || ""}
-                              onChange={(e) => setDietaryRestrictions(prev => ({
-                                ...prev,
-                                [member.id]: e.target.value
-                              }))}
-                              maxLength={500}
-                              className="border-sage/30 focus:border-rose mt-1"
-                              placeholder="None, vegetarian, allergies, etc."
-                            />
+                          <div className="ml-8 animate-fade-in space-y-4">
+                            <div>
+                              <Label className="text-sm text-foreground font-medium">
+                                Meal Choice *
+                              </Label>
+                              <RadioGroup
+                                value={mealChoices[member.id] || ""}
+                                onValueChange={(value) => setMealChoices(prev => ({
+                                  ...prev,
+                                  [member.id]: value
+                                }))}
+                                className="mt-2 flex flex-col space-y-2"
+                              >
+                                {MEAL_CHOICES.map((choice) => (
+                                  <div key={choice.value} className="flex items-center space-x-2">
+                                    <RadioGroupItem value={choice.value} id={`meal-${member.id}-${choice.value}`} />
+                                    <Label 
+                                      htmlFor={`meal-${member.id}-${choice.value}`}
+                                      className="text-sm cursor-pointer"
+                                    >
+                                      {choice.label}
+                                    </Label>
+                                  </div>
+                                ))}
+                              </RadioGroup>
+                            </div>
+                            <div>
+                              <Label htmlFor={`dietary-${member.id}`} className="text-sm text-foreground">
+                                Dietary Restrictions / Allergies
+                              </Label>
+                              <Input
+                                id={`dietary-${member.id}`}
+                                value={dietaryRestrictions[member.id] || ""}
+                                onChange={(e) => setDietaryRestrictions(prev => ({
+                                  ...prev,
+                                  [member.id]: e.target.value
+                                }))}
+                                maxLength={500}
+                                className="border-sage/30 focus:border-rose mt-1"
+                                placeholder="Allergies, special requirements, etc."
+                              />
+                            </div>
                           </div>
                         )}
                       </div>
@@ -311,6 +362,7 @@ const RSVPSection = () => {
                       setShowPartyForm(false);
                       setPartyMembers([]);
                       setSelectedGuests([]);
+                      setMealChoices({});
                       setDietaryRestrictions({});
                     }}
                     className="flex-1"
