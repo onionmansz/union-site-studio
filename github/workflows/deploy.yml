@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```
+
+Commit and push this file.
+
+## Step 4: Add your Supabase secrets
+
+In your GitHub repo, go to **Settings → Secrets and variables → Actions**, then add two repository secrets:
+
+- `VITE_SUPABASE_URL` — your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` — your Supabase anon/public key
+
+You can find these in your Supabase dashboard under **Settings → API**.
+
+## Step 5: Enable GitHub Pages
+
+Go to your repo's **Settings → Pages**. Under "Build and deployment":
+
+- Set **Source** to "Deploy from a branch"
+- Set **Branch** to `gh-pages` and folder to `/ (root)`
+- Click Save
+
+## Step 6: Wait for the deploy
+
+Go to the **Actions** tab in your repo. You should see the workflow running. Once it completes, your site will be live at:
+```
+https://your-username.github.io/your-repo-name/
