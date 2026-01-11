@@ -16,6 +16,7 @@ interface GuestListMember {
   name: string;
   email: string | null;
   party_id: string;
+  party_code: string | null;
 }
 
 const MEAL_CHOICES = [
@@ -33,7 +34,7 @@ const rsvpSchema = z.object({
 });
 
 const RSVPSection = () => {
-  const [searchName, setSearchName] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [partyMembers, setPartyMembers] = useState<GuestListMember[]>([]);
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [mealChoices, setMealChoices] = useState<Record<string, string>>({});
@@ -43,19 +44,21 @@ const RSVPSection = () => {
   
   const { toast } = useToast();
 
-  const handleNameSearch = async (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!searchName.trim()) {
+    const input = searchInput.trim();
+    
+    if (!input) {
       toast({
-        title: "Please enter a name",
-        description: "Enter your name to find your party.",
+        title: "Please enter your name or invitation code",
+        description: "Enter your name or the code from your invitation to find your party.",
         variant: "destructive",
       });
       return;
     }
 
-    // Fetch all guests for fuzzy matching
+    // Fetch all guests for matching
     const { data: allGuests, error: fetchError } = await supabase
       .from('guest_list')
       .select('*');
@@ -69,28 +72,39 @@ const RSVPSection = () => {
       return;
     }
 
-    // Use Fuse.js for fuzzy name matching
-    const fuse = new Fuse(allGuests, {
-      keys: ['name'],
-      threshold: 0.4, // Lower = stricter matching (0.0 = exact, 1.0 = match anything)
-      includeScore: true,
-    });
+    // First try exact match on party_code (case-insensitive)
+    const codeMatch = allGuests.find(
+      guest => guest.party_code?.toLowerCase() === input.toLowerCase()
+    );
 
-    const results = fuse.search(searchName.trim());
+    let foundGuest: GuestListMember | null = null;
 
-    if (results.length === 0) {
-      // Add artificial delay to prevent timing attacks
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      toast({
-        title: "Unable to find your information",
-        description: "Please check your spelling or contact the couple.",
-        variant: "destructive",
+    if (codeMatch) {
+      foundGuest = codeMatch;
+    } else {
+      // Fall back to fuzzy name matching
+      const fuse = new Fuse(allGuests, {
+        keys: ['name'],
+        threshold: 0.4,
+        includeScore: true,
       });
-      return;
-    }
 
-    const foundGuest = results[0].item;
+      const results = fuse.search(input);
+
+      if (results.length === 0) {
+        // Add artificial delay to prevent timing attacks
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        toast({
+          title: "Unable to find your information",
+          description: "Please check your spelling or invitation code, or contact the couple.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      foundGuest = results[0].item;
+    }
 
     // Fetch all party members
     const { data: party, error: partyError } = await supabase
@@ -198,7 +212,7 @@ const RSVPSection = () => {
     });
     
     // Reset form
-    setSearchName("");
+    setSearchInput("");
     setPartyMembers([]);
     setSelectedGuests([]);
     setMealChoices({});
@@ -230,21 +244,21 @@ const RSVPSection = () => {
         <Card className="bg-card/95 backdrop-blur-sm border-0 shadow-elegant animate-scale-in">
           <CardContent className="pt-12 pb-8 flex flex-col justify-center">
             {!showPartyForm ? (
-              <form onSubmit={handleNameSearch} className="space-y-6">
+              <form onSubmit={handleSearch} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="searchName" className="text-foreground font-medium">
-                    Enter Your Name *
+                  <Label htmlFor="searchInput" className="text-foreground font-medium">
+                    Enter Your Name or Invitation Code *
                   </Label>
                   <Input
-                    id="searchName"
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
+                    id="searchInput"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                     required
                     className="border-sage/30 focus:border-rose"
-                    placeholder="Your full name"
+                    placeholder="Your full name or invitation code"
                   />
                   <p className="text-sm text-foreground">
-                    We'll look up your party and show everyone invited with you.
+                    Enter your name or the code from your invitation to find your party.
                   </p>
                 </div>
 
