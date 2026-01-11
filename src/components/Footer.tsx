@@ -16,7 +16,12 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">Contact</h4>
             <p className="opacity-80">Questions? Email us at</p>
-            <p className="text-foreground font-semibold">GennaandJulian@gmail.com</p>
+            <a 
+              href="mailto:GennaandJulian@gmail.com" 
+              className="text-foreground font-semibold hover:underline"
+            >
+              GennaandJulian@gmail.com
+            </a>
           </div>
           
           <div>
