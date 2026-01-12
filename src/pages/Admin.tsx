@@ -498,6 +498,8 @@ const Admin = () => {
               {Object.entries(groupedGuests).map(([partyId, partyGuests]) => {
                 const partyCode = partyGuests[0]?.party_code;
                 const isEditing = editingPartyCode === partyId;
+                // Get party message from first guest who has one
+                const partyMessage = partyGuests.find(g => g.message)?.message;
 
                 return (
                   <div key={partyId} className="border border-border rounded-lg p-4">
@@ -559,6 +561,14 @@ const Admin = () => {
                       </div>
                     </div>
 
+                    {/* Party-level message */}
+                    {partyMessage && (
+                      <div className="mb-4 p-3 bg-muted/50 rounded-md border-l-4 border-rose">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Message from this party:</p>
+                        <p className="text-sm italic text-foreground">{partyMessage}</p>
+                      </div>
+                    )}
+
                     <div className="space-y-3">
                       {partyGuests.map((guest) => (
                         <div
@@ -613,16 +623,10 @@ const Admin = () => {
                                     {guest.meal_choice || "Not selected"}
                                   </p>
                                 </div>
-                                <div className="mb-2">
+                                <div>
                                   <p className="text-xs text-muted-foreground">Dietary Restrictions</p>
                                   <p className="text-sm font-medium">
                                     {guest.dietary_restrictions || "None noted"}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-xs text-muted-foreground">Notes</p>
-                                  <p className="text-sm italic text-foreground">
-                                    {guest.message || "No notes left"}
                                   </p>
                                 </div>
                               </div>
