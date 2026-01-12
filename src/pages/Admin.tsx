@@ -29,33 +29,81 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
+    let mounted = true;
+
+    // Safety timeout - if loading takes more than 5 seconds, stop loading
+    const timeout = setTimeout(() => {
+      if (mounted) {
+        console.error('Auth check timed out after 5 seconds');
+        setLoading(false);
+        setCheckingAuth(false);
+      }
+    }, 5000);
+
     // Check authentication and admin status
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error: sessionError }) => {
+      if (!mounted) return;
+
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        setLoading(false);
+        setCheckingAuth(false);
+        clearTimeout(timeout);
+        navigate("/auth");
+        return;
+      }
+
       if (!session) {
+        console.log('No session found, redirecting to auth');
+        setLoading(false);
+        setCheckingAuth(false);
+        clearTimeout(timeout);
         navigate("/auth");
       } else {
+        console.log('Session found for user:', session.user.id);
         setUser(session.user);
+        setCheckingAuth(false);
         await checkAdminStatus(session.user.id);
+        clearTimeout(timeout);
       }
+    }).catch(err => {
+      if (!mounted) return;
+      console.error('Error getting session:', err);
+      setLoading(false);
+      setCheckingAuth(false);
+      clearTimeout(timeout);
+      navigate("/auth");
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+
       if (!session) {
+        setLoading(false);
+        setCheckingAuth(false);
         navigate("/auth");
       } else {
         setUser(session.user);
+        setCheckingAuth(false);
         await checkAdminStatus(session.user.id);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(timeout);
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const checkAdminStatus = async (userId: string) => {
+    console.log('Checking admin status for user:', userId);
+
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
@@ -64,15 +112,20 @@ const Admin = () => {
       .maybeSingle();
 
     if (error) {
+      console.error('Error checking admin status:', error);
       setIsAdmin(false);
       setLoading(false);
       return;
     }
 
+    console.log('Admin check result:', data);
+
     if (data) {
+      console.log('User is admin, fetching RSVPs');
       setIsAdmin(true);
       fetchRSVPs();
     } else {
+      console.log('User is not admin');
       setIsAdmin(false);
       setLoading(false);
     }
@@ -104,10 +157,16 @@ const Admin = () => {
 
   const attendingCount = rsvps.filter(r => r.attendance === 'attending').length;
 
-  if (loading) {
+  // Show loading while checking auth or loading data
+  if (checkingAuth || (loading && isAdmin)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-foreground">Loading...</p>
+        <div className="text-center">
+          <p className="text-foreground text-lg">Loading...</p>
+          <p className="text-muted-foreground text-sm mt-2">
+            {checkingAuth ? 'Checking authentication...' : 'Loading data...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -117,9 +176,17 @@ const Admin = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <Card className="max-w-md p-8 text-center">
           <h1 className="font-serif text-3xl mb-4 text-foreground">Access Denied</h1>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-muted-foreground mb-4">
             You don't have permission to access the admin dashboard.
           </p>
+          {user && (
+            <div className="bg-muted p-4 rounded-md mb-6 text-left">
+              <p className="text-sm text-muted-foreground mb-2">To grant admin access, run this SQL in Supabase:</p>
+              <code className="text-xs bg-background p-2 rounded block overflow-x-auto">
+                INSERT INTO user_roles (user_id, role) VALUES ('{user.id}', 'admin');
+              </code>
+            </div>
+          )}
           <div className="flex gap-4 justify-center">
             <Button onClick={() => navigate("/")}>Back to Site</Button>
             <Button onClick={handleLogout} variant="outline">Logout</Button>
