@@ -36,71 +36,33 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let mounted = true;
-    let authCheckComplete = false;
+    let isMounted = true;
 
-    const checkAuth = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    const initAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
 
-        if (!mounted) return;
+      if (!isMounted) return;
 
-        if (sessionError) {
-          console.error('Session error:', sessionError);
-          setLoading(false);
-          setCheckingAuth(false);
-          return;
-        }
-
-        if (!session) {
-          console.log('No session found, redirecting to auth');
-          setLoading(false);
-          setCheckingAuth(false);
-          // Small delay to prevent race condition with login redirect
-          setTimeout(() => {
-            if (mounted && !authCheckComplete) {
-              navigate("/auth");
-            }
-          }, 500);
-        } else {
-          console.log('Session found for user:', session.user.id);
-          authCheckComplete = true;
-          setUser(session.user);
-          setCheckingAuth(false);
-          await checkAdminStatus(session.user.id);
-        }
-      } catch (err) {
-        if (!mounted) return;
-        console.error('Error getting session:', err);
+      if (error || !session) {
         setLoading(false);
         setCheckingAuth(false);
+        setTimeout(() => {
+          if (isMounted) {
+            navigate("/auth", { replace: true });
+          }
+        }, 300);
+        return;
       }
+
+      setUser(session.user);
+      setCheckingAuth(false);
+      await checkAdminStatus(session.user.id);
     };
 
-    checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!mounted) return;
-
-      console.log('Auth state changed:', event);
-
-      if (event === 'SIGNED_IN' && session) {
-        authCheckComplete = true;
-        setUser(session.user);
-        setCheckingAuth(false);
-        await checkAdminStatus(session.user.id);
-      } else if (event === 'SIGNED_OUT') {
-        setIsAdmin(false);
-        setUser(null);
-        setLoading(false);
-        setCheckingAuth(false);
-        navigate("/auth");
-      }
-    });
+    initAuth();
 
     return () => {
-      mounted = false;
-      subscription.unsubscribe();
+      isMounted = false;
     };
   }, [navigate]);
 
@@ -398,6 +360,9 @@ const Admin = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <Card className="max-w-md p-8 text-center">
           <h1 className="font-serif text-3xl mb-4 text-foreground">Access Denied</h1>
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access the admin dashboard. Please contact the site administrator to request access.
+          </p>
           <div className="flex gap-4 justify-center">
             <Button onClick={() => navigate("/")}>Back to Site</Button>
             <Button onClick={handleLogout} variant="outline">Logout</Button>
