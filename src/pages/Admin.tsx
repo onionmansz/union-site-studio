@@ -34,17 +34,32 @@ const Admin = () => {
 
   useEffect(() => {
     // Check authentication and admin status
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error: sessionError }) => {
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        setLoading(false);
+        navigate("/auth");
+        return;
+      }
+
       if (!session) {
+        console.log('No session found, redirecting to auth');
+        setLoading(false);
         navigate("/auth");
       } else {
+        console.log('Session found for user:', session.user.id);
         setUser(session.user);
         await checkAdminStatus(session.user.id);
       }
+    }).catch(err => {
+      console.error('Error getting session:', err);
+      setLoading(false);
+      navigate("/auth");
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (!session) {
+        setLoading(false);
         navigate("/auth");
       } else {
         setUser(session.user);
@@ -56,6 +71,8 @@ const Admin = () => {
   }, [navigate]);
 
   const checkAdminStatus = async (userId: string) => {
+    console.log('Checking admin status for user:', userId);
+
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
@@ -64,15 +81,20 @@ const Admin = () => {
       .maybeSingle();
 
     if (error) {
+      console.error('Error checking admin status:', error);
       setIsAdmin(false);
       setLoading(false);
       return;
     }
 
+    console.log('Admin check result:', data);
+
     if (data) {
+      console.log('User is admin, fetching RSVPs');
       setIsAdmin(true);
       fetchRSVPs();
     } else {
+      console.log('User is not admin');
       setIsAdmin(false);
       setLoading(false);
     }
