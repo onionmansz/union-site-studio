@@ -30,7 +30,7 @@ const rsvpSchema = z.object({
   dietary_restrictions: z.string().max(500, "Dietary restrictions must be less than 500 characters").optional().nullable(),
   meal_choice: z.enum(["chicken", "beef", "vegetarian"]).optional().nullable(),
   message: z.string().max(1000, "Message must be less than 1000 characters").optional().nullable(),
-  attendance: z.enum(["attending", "not_attending"]),
+  attendance: z.enum(["attending", "not-attending"]),
 }).superRefine((value, ctx) => {
   if (value.attendance === "attending" && !value.meal_choice) {
     ctx.addIssue({
@@ -47,7 +47,7 @@ const RSVPSection = () => {
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [mealChoices, setMealChoices] = useState<Record<string, string>>({});
   const [dietaryRestrictions, setDietaryRestrictions] = useState<Record<string, string>>({});
-  const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not_attending">>({});
+  const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not-attending">>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
   
@@ -354,13 +354,13 @@ const RSVPSection = () => {
                               <RadioGroup
                                 value={attendanceSelections[member.id] || "attending"}
                                 onValueChange={(value) => {
-                                  const attendanceValue = value as "attending" | "not_attending";
+                                  const attendanceValue = value as "attending" | "not-attending";
                                   setAttendanceSelections((prev) => ({
                                     ...prev,
                                     [member.id]: attendanceValue,
                                   }));
 
-                                  if (attendanceValue === "not_attending") {
+                                  if (attendanceValue === "not-attending") {
                                     setMealChoices((prev) => {
                                       const { [member.id]: _, ...rest } = prev;
                                       return rest;
@@ -383,7 +383,7 @@ const RSVPSection = () => {
                                   </Label>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                  <RadioGroupItem value="not_attending" id={`attendance-${member.id}-not-attending`} />
+                                  <RadioGroupItem value="not-attending" id={`attendance-${member.id}-not-attending`} />
                                   <Label
                                     htmlFor={`attendance-${member.id}-not-attending`}
                                     className="text-sm cursor-pointer"
@@ -394,7 +394,7 @@ const RSVPSection = () => {
                               </RadioGroup>
                             </div>
 
-                            {attendanceSelections[member.id] !== "not_attending" && (
+                            {attendanceSelections[member.id] !== "not-attending" && (
                               <>
                                 <div>
                                   <Label className="text-sm text-foreground font-medium">
