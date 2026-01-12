@@ -28,9 +28,17 @@ const MEAL_CHOICES = [
 const rsvpSchema = z.object({
   guest_list_id: z.string().uuid("Invalid guest ID"),
   dietary_restrictions: z.string().max(500, "Dietary restrictions must be less than 500 characters").optional().nullable(),
-  meal_choice: z.enum(["chicken", "beef", "vegetarian"], { required_error: "Please select a meal choice" }),
+  meal_choice: z.enum(["chicken", "beef", "vegetarian"]).optional().nullable(),
   message: z.string().max(1000, "Message must be less than 1000 characters").optional().nullable(),
-  attendance: z.literal("attending"),
+  attendance: z.enum(["attending", "not_attending"]),
+}).superRefine((value, ctx) => {
+  if (value.attendance === "attending" && !value.meal_choice) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Please select a meal choice",
+      path: ["meal_choice"],
+    });
+  }
 });
 
 const RSVPSection = () => {
@@ -39,6 +47,7 @@ const RSVPSection = () => {
   const [selectedGuests, setSelectedGuests] = useState<string[]>([]);
   const [mealChoices, setMealChoices] = useState<Record<string, string>>({});
   const [dietaryRestrictions, setDietaryRestrictions] = useState<Record<string, string>>({});
+  const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not_attending">>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
   
@@ -131,14 +140,18 @@ const RSVPSection = () => {
     if (selectedGuests.length === 0) {
       toast({
         title: "No guests selected",
-        description: "Please select who will be attending.",
+        description: "Please select who you're responding for.",
         variant: "destructive",
       });
       return;
     }
 
-    // Check that all selected guests have a meal choice
-    const missingMealChoice = selectedGuests.find(guestId => !mealChoices[guestId]);
+    const attendingGuests = selectedGuests.filter(
+      (guestId) => attendanceSelections[guestId] !== "not_attending",
+    );
+
+    // Check that all attending guests have a meal choice
+    const missingMealChoice = attendingGuests.find(guestId => !mealChoices[guestId]);
     if (missingMealChoice) {
       const guest = partyMembers.find(g => g.id === missingMealChoice);
       toast({
@@ -150,13 +163,18 @@ const RSVPSection = () => {
     }
 
     // Create RSVPs for selected guests
-    const rsvpsToInsert = selectedGuests.map(guestId => ({
-      guest_list_id: guestId,
-      attendance: 'attending' as const,
-      meal_choice: mealChoices[guestId] as "chicken" | "beef" | "vegetarian",
-      dietary_restrictions: dietaryRestrictions[guestId] || null,
-      message: message || null,
-    }));
+    const rsvpsToInsert = selectedGuests.map(guestId => {
+      const attendance = attendanceSelections[guestId] || "attending";
+      const isAttending = attendance === "attending";
+
+      return {
+        guest_list_id: guestId,
+        attendance,
+        meal_choice: isAttending ? (mealChoices[guestId] as "chicken" | "beef" | "vegetarian") : null,
+        dietary_restrictions: isAttending ? dietaryRestrictions[guestId] || null : null,
+        message: message || null,
+      };
+    });
 
     // Validate each RSVP with zod schema
     try {
@@ -187,10 +205,12 @@ const RSVPSection = () => {
     try {
       const guestDetails = selectedGuests.map(guestId => {
         const guest = partyMembers.find(g => g.id === guestId);
+        const attendance = attendanceSelections[guestId] || "attending";
         return {
           name: guest?.name || 'Unknown',
-          mealChoice: mealChoices[guestId] || undefined,
-          dietaryRestrictions: dietaryRestrictions[guestId] || undefined,
+          attendance,
+          mealChoice: attendance === "attending" ? mealChoices[guestId] || undefined : undefined,
+          dietaryRestrictions: attendance === "attending" ? dietaryRestrictions[guestId] || undefined : undefined,
         };
       });
 
@@ -217,16 +237,37 @@ const RSVPSection = () => {
     setSelectedGuests([]);
     setMealChoices({});
     setDietaryRestrictions({});
+    setAttendanceSelections({});
     setMessage("");
     setShowPartyForm(false);
   };
 
   const toggleGuest = (guestId: string) => {
-    setSelectedGuests(prev => 
-      prev.includes(guestId) 
-        ? prev.filter(id => id !== guestId)
-        : [...prev, guestId]
-    );
+    setSelectedGuests((prev) => {
+      const isSelected = prev.includes(guestId);
+
+      if (isSelected) {
+        setAttendanceSelections((prevAttendance) => {
+          const { [guestId]: _, ...rest } = prevAttendance;
+          return rest;
+        });
+        setMealChoices((prevChoices) => {
+          const { [guestId]: _, ...rest } = prevChoices;
+          return rest;
+        });
+        setDietaryRestrictions((prevRestrictions) => {
+          const { [guestId]: _, ...rest } = prevRestrictions;
+          return rest;
+        });
+        return prev.filter((id) => id !== guestId);
+      }
+
+      setAttendanceSelections((prevAttendance) => ({
+        ...prevAttendance,
+        [guestId]: "attending",
+      }));
+      return [...prev, guestId];
+    });
   };
 
   return (
@@ -278,7 +319,7 @@ const RSVPSection = () => {
                     Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
                   <p className="text-sm text-foreground">
-                    Select who will be attending:
+                    Select who you're responding for:
                   </p>
                   
                   <div className="space-y-4 border border-border rounded-lg p-4">
@@ -308,45 +349,96 @@ const RSVPSection = () => {
                           <div className="ml-8 animate-fade-in space-y-4">
                             <div>
                               <Label className="text-sm text-foreground font-medium">
-                                Meal Choice *
+                                Attendance *
                               </Label>
                               <RadioGroup
-                                value={mealChoices[member.id] || ""}
-                                onValueChange={(value) => setMealChoices(prev => ({
-                                  ...prev,
-                                  [member.id]: value
-                                }))}
+                                value={attendanceSelections[member.id] || "attending"}
+                                onValueChange={(value) => {
+                                  const attendanceValue = value as "attending" | "not_attending";
+                                  setAttendanceSelections((prev) => ({
+                                    ...prev,
+                                    [member.id]: attendanceValue,
+                                  }));
+
+                                  if (attendanceValue === "not_attending") {
+                                    setMealChoices((prev) => {
+                                      const { [member.id]: _, ...rest } = prev;
+                                      return rest;
+                                    });
+                                    setDietaryRestrictions((prev) => {
+                                      const { [member.id]: _, ...rest } = prev;
+                                      return rest;
+                                    });
+                                  }
+                                }}
                                 className="mt-2 flex flex-col space-y-2"
                               >
-                                {MEAL_CHOICES.map((choice) => (
-                                  <div key={choice.value} className="flex items-center space-x-2">
-                                    <RadioGroupItem value={choice.value} id={`meal-${member.id}-${choice.value}`} />
-                                    <Label 
-                                      htmlFor={`meal-${member.id}-${choice.value}`}
-                                      className="text-sm cursor-pointer"
-                                    >
-                                      {choice.label}
-                                    </Label>
-                                  </div>
-                                ))}
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="attending" id={`attendance-${member.id}-attending`} />
+                                  <Label
+                                    htmlFor={`attendance-${member.id}-attending`}
+                                    className="text-sm cursor-pointer"
+                                  >
+                                    Attending
+                                  </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="not_attending" id={`attendance-${member.id}-not-attending`} />
+                                  <Label
+                                    htmlFor={`attendance-${member.id}-not-attending`}
+                                    className="text-sm cursor-pointer"
+                                  >
+                                    Not Attending
+                                  </Label>
+                                </div>
                               </RadioGroup>
                             </div>
-                            <div>
-                              <Label htmlFor={`dietary-${member.id}`} className="text-sm text-foreground">
-                                Dietary Restrictions / Allergies
-                              </Label>
-                              <Input
-                                id={`dietary-${member.id}`}
-                                value={dietaryRestrictions[member.id] || ""}
-                                onChange={(e) => setDietaryRestrictions(prev => ({
-                                  ...prev,
-                                  [member.id]: e.target.value
-                                }))}
-                                maxLength={500}
-                                className="border-sage/30 focus:border-rose mt-1"
-                                placeholder="Allergies, special requirements, etc."
-                              />
-                            </div>
+
+                            {attendanceSelections[member.id] !== "not_attending" && (
+                              <>
+                                <div>
+                                  <Label className="text-sm text-foreground font-medium">
+                                    Meal Choice *
+                                  </Label>
+                                  <RadioGroup
+                                    value={mealChoices[member.id] || ""}
+                                    onValueChange={(value) => setMealChoices(prev => ({
+                                      ...prev,
+                                      [member.id]: value
+                                    }))}
+                                    className="mt-2 flex flex-col space-y-2"
+                                  >
+                                    {MEAL_CHOICES.map((choice) => (
+                                      <div key={choice.value} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={choice.value} id={`meal-${member.id}-${choice.value}`} />
+                                        <Label
+                                          htmlFor={`meal-${member.id}-${choice.value}`}
+                                          className="text-sm cursor-pointer"
+                                        >
+                                          {choice.label}
+                                        </Label>
+                                      </div>
+                                    ))}
+                                  </RadioGroup>
+                                </div>
+                                <div>
+                                  <Label htmlFor={`dietary-${member.id}`} className="text-sm text-foreground">
+                                    Dietary Restrictions / Allergies
+                                  </Label>
+                                  <Input
+                                    id={`dietary-${member.id}`}
+                                    value={dietaryRestrictions[member.id] || ""}
+                                    onChange={(e) => setDietaryRestrictions(prev => ({
+                                      ...prev,
+                                      [member.id]: e.target.value
+                                    }))}
+                                    maxLength={500}
+                                    className="border-sage/30 focus:border-rose mt-1"
+                                    placeholder="Allergies, special requirements, etc."
+                                  />
+                                </div>
+                              </>
+                            )}
                           </div>
                         )}
                       </div>
@@ -378,6 +470,7 @@ const RSVPSection = () => {
                       setSelectedGuests([]);
                       setMealChoices({});
                       setDietaryRestrictions({});
+                      setAttendanceSelections({});
                     }}
                     className="flex-1"
                   >
