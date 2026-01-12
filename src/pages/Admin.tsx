@@ -36,70 +36,33 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    // Safety timeout - if loading takes more than 5 seconds, stop loading
-    const timeout = setTimeout(() => {
-      if (mounted) {
-        console.error('Auth check timed out after 5 seconds');
+    const initAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (!isMounted) return;
+
+      if (error || !session) {
         setLoading(false);
         setCheckingAuth(false);
-      }
-    }, 5000);
-
-    // Check authentication and admin status
-    supabase.auth.getSession().then(async ({ data: { session }, error: sessionError }) => {
-      if (!mounted) return;
-
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
+        setTimeout(() => {
+          if (isMounted) {
+            navigate("/auth", { replace: true });
+          }
+        }, 300);
         return;
       }
 
-      if (!session) {
-        console.log('No session found, redirecting to auth');
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
-      } else {
-        console.log('Session found for user:', session.user.id);
-        setUser(session.user);
-        setCheckingAuth(false);
-        await checkAdminStatus(session.user.id);
-        clearTimeout(timeout);
-      }
-    }).catch(err => {
-      if (!mounted) return;
-      console.error('Error getting session:', err);
-      setLoading(false);
+      setUser(session.user);
       setCheckingAuth(false);
-      clearTimeout(timeout);
-      navigate("/auth");
-    });
+      await checkAdminStatus(session.user.id);
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
-
-      if (!session) {
-        setLoading(false);
-        setCheckingAuth(false);
-        navigate("/auth");
-      } else {
-        setUser(session.user);
-        setCheckingAuth(false);
-        await checkAdminStatus(session.user.id);
-      }
-    });
+    initAuth();
 
     return () => {
-      mounted = false;
-      clearTimeout(timeout);
-      subscription.unsubscribe();
+      isMounted = false;
     };
   }, [navigate]);
 

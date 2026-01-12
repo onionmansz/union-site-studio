@@ -15,33 +15,28 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/admin");
-      }
-    });
-  }, [navigate]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Welcome back!",
-          description: "You've successfully logged in.",
-        });
-        navigate("/admin");
+        if (data.session) {
+          toast({
+            title: "Welcome back!",
+            description: "You've successfully logged in.",
+          });
+          setTimeout(() => {
+            navigate("/admin", { replace: true });
+          }, 150);
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email,
