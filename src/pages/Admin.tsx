@@ -37,68 +37,69 @@ const Admin = () => {
 
   useEffect(() => {
     let mounted = true;
+    let authCheckComplete = false;
 
-    // Safety timeout - if loading takes more than 5 seconds, stop loading
-    const timeout = setTimeout(() => {
-      if (mounted) {
-        console.error('Auth check timed out after 5 seconds');
+    const checkAuth = async () => {
+      try {
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (!mounted) return;
+
+        if (sessionError) {
+          console.error('Session error:', sessionError);
+          setLoading(false);
+          setCheckingAuth(false);
+          return;
+        }
+
+        if (!session) {
+          console.log('No session found, redirecting to auth');
+          setLoading(false);
+          setCheckingAuth(false);
+          // Small delay to prevent race condition with login redirect
+          setTimeout(() => {
+            if (mounted && !authCheckComplete) {
+              navigate("/auth");
+            }
+          }, 500);
+        } else {
+          console.log('Session found for user:', session.user.id);
+          authCheckComplete = true;
+          setUser(session.user);
+          setCheckingAuth(false);
+          await checkAdminStatus(session.user.id);
+        }
+      } catch (err) {
+        if (!mounted) return;
+        console.error('Error getting session:', err);
         setLoading(false);
         setCheckingAuth(false);
       }
-    }, 5000);
+    };
 
-    // Check authentication and admin status
-    supabase.auth.getSession().then(async ({ data: { session }, error: sessionError }) => {
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
 
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
-        return;
-      }
+      console.log('Auth state changed:', event);
 
-      if (!session) {
-        console.log('No session found, redirecting to auth');
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
-      } else {
-        console.log('Session found for user:', session.user.id);
+      if (event === 'SIGNED_IN' && session) {
+        authCheckComplete = true;
         setUser(session.user);
         setCheckingAuth(false);
         await checkAdminStatus(session.user.id);
-        clearTimeout(timeout);
-      }
-    }).catch(err => {
-      if (!mounted) return;
-      console.error('Error getting session:', err);
-      setLoading(false);
-      setCheckingAuth(false);
-      clearTimeout(timeout);
-      navigate("/auth");
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
-
-      if (!session) {
+      } else if (event === 'SIGNED_OUT') {
+        setIsAdmin(false);
+        setUser(null);
         setLoading(false);
         setCheckingAuth(false);
         navigate("/auth");
-      } else {
-        setUser(session.user);
-        setCheckingAuth(false);
-        await checkAdminStatus(session.user.id);
       }
     });
 
     return () => {
       mounted = false;
-      clearTimeout(timeout);
       subscription.unsubscribe();
     };
   }, [navigate]);
