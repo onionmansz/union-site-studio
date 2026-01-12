@@ -122,6 +122,7 @@ const Admin = () => {
       .select('*');
 
     console.log('Fetched RSVPs:', rsvpData);
+    console.log('RSVPs with messages:', rsvpData?.filter(r => r.message).map(r => ({ id: r.id, message: r.message })));
 
     if (rsvpError) {
       toast({
@@ -500,6 +501,10 @@ const Admin = () => {
                 const isEditing = editingPartyCode === partyId;
                 // Get party message from first guest who has one
                 const partyMessage = partyGuests.find(g => g.message)?.message;
+
+                if (partyMessage) {
+                  console.log(`Party ${partyCode || partyId} has message:`, partyMessage);
+                }
 
                 return (
                   <div key={partyId} className="border border-border rounded-lg p-4">
