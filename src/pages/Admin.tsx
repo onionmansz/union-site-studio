@@ -374,17 +374,9 @@ const Admin = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <Card className="max-w-md p-8 text-center">
           <h1 className="font-serif text-3xl mb-4 text-foreground">Access Denied</h1>
-          <p className="text-muted-foreground mb-4">
-            You don't have permission to access the admin dashboard.
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access the admin dashboard. Please contact the site administrator to request access.
           </p>
-          {user && (
-            <div className="bg-muted p-4 rounded-md mb-6 text-left">
-              <p className="text-sm text-muted-foreground mb-2">To grant admin access, run this SQL in Supabase:</p>
-              <code className="text-xs bg-background p-2 rounded block overflow-x-auto">
-                INSERT INTO user_roles (user_id, role) VALUES ('{user.id}', 'admin');
-              </code>
-            </div>
-          )}
           <div className="flex gap-4 justify-center">
             <Button onClick={() => navigate("/")}>Back to Site</Button>
             <Button onClick={handleLogout} variant="outline">Logout</Button>
