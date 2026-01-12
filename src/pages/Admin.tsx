@@ -608,24 +608,24 @@ const Admin = () => {
 
                               {/* Additional Info */}
                               <div>
-                                {guest.meal_choice && (
-                                  <div className="mb-2">
-                                    <p className="text-xs text-muted-foreground">Meal Choice</p>
-                                    <p className="text-sm font-medium">{guest.meal_choice}</p>
-                                  </div>
-                                )}
-                                {guest.dietary_restrictions && (
-                                  <div className="mb-2">
-                                    <p className="text-xs text-muted-foreground">Dietary Restrictions</p>
-                                    <p className="text-sm font-medium">{guest.dietary_restrictions}</p>
-                                  </div>
-                                )}
-                                {guest.message && (
-                                  <div>
-                                    <p className="text-xs text-muted-foreground">Message</p>
-                                    <p className="text-sm italic">{guest.message}</p>
-                                  </div>
-                                )}
+                                <div className="mb-2">
+                                  <p className="text-xs text-muted-foreground">Meal Choice</p>
+                                  <p className="text-sm font-medium capitalize">
+                                    {guest.meal_choice || "Not selected"}
+                                  </p>
+                                </div>
+                                <div className="mb-2">
+                                  <p className="text-xs text-muted-foreground">Dietary Restrictions</p>
+                                  <p className="text-sm font-medium">
+                                    {guest.dietary_restrictions || "None noted"}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-muted-foreground">Notes</p>
+                                  <p className="text-sm italic text-foreground">
+                                    {guest.message || "No notes left"}
+                                  </p>
+                                </div>
                               </div>
                             </div>
 
