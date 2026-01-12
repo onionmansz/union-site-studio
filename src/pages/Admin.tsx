@@ -345,6 +345,20 @@ const Admin = () => {
   const attendingCount = guests.filter(g => g.rsvp_status === 'attending').length;
   const pendingCount = guests.filter(g => g.rsvp_status === 'pending').length;
   const notAttendingCount = guests.filter(g => g.rsvp_status === 'not_attending').length;
+  const mealSummary = guests.reduce((acc, guest) => {
+    if (guest.rsvp_status !== 'attending') {
+      return acc;
+    }
+
+    const choice = guest.meal_choice || 'not_selected';
+    acc[choice] = (acc[choice] || 0) + 1;
+    return acc;
+  }, {
+    chicken: 0,
+    beef: 0,
+    vegetarian: 0,
+    not_selected: 0,
+  } as Record<string, number>);
 
   // Group guests by party
   const groupedGuests = guests.reduce((acc, guest) => {
@@ -406,7 +420,7 @@ const Admin = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <Card className="p-6">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Guests</h3>
             <p className="text-3xl font-bold text-foreground">{guests.length}</p>
@@ -431,6 +445,27 @@ const Admin = () => {
               Not Attending
             </h3>
             <p className="text-3xl font-bold text-red-600">{notAttendingCount}</p>
+          </Card>
+          <Card className="p-6">
+            <h3 className="text-sm font-medium text-muted-foreground mb-3">Meal Selections</h3>
+            <div className="space-y-2 text-sm text-foreground">
+              <div className="flex items-center justify-between">
+                <span>Chicken</span>
+                <span className="font-semibold">{mealSummary.chicken}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Beef</span>
+                <span className="font-semibold">{mealSummary.beef}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Vegetarian</span>
+                <span className="font-semibold">{mealSummary.vegetarian}</span>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Not selected</span>
+                <span className="font-semibold">{mealSummary.not_selected}</span>
+              </div>
+            </div>
           </Card>
         </div>
 
