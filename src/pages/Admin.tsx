@@ -159,6 +159,8 @@ const Admin = () => {
       .from('rsvps')
       .select('*');
 
+    console.log('Fetched RSVPs:', rsvpData);
+
     if (rsvpError) {
       toast({
         title: "Error",
@@ -170,6 +172,13 @@ const Admin = () => {
     // Merge guest and RSVP data
     const guestsWithRSVP: GuestWithRSVP[] = (guestData || []).map(guest => {
       const rsvp = (rsvpData || []).find(r => r.guest_list_id === guest.id);
+
+      console.log(`Guest ${guest.name}:`, {
+        hasRsvp: !!rsvp,
+        message: rsvp?.message,
+        dietary: rsvp?.dietary_restrictions,
+        meal: rsvp?.meal_choice
+      });
 
       return {
         id: guest.id,
