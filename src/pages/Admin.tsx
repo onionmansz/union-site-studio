@@ -27,7 +27,6 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
   const [existingParties, setExistingParties] = useState<Array<{ party_id: string; party_code: string | null; names: string[] }>>([]);
   const [editingPartyCode, setEditingPartyCode] = useState<string | null>(null);
@@ -36,76 +35,43 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let mounted = true;
+    let isMounted = true;
 
-    // Safety timeout - if loading takes more than 5 seconds, stop loading
-    const timeout = setTimeout(() => {
-      if (mounted) {
-        console.error('Auth check timed out after 5 seconds');
-        setLoading(false);
-        setCheckingAuth(false);
-      }
-    }, 5000);
+    const initAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
 
-    // Check authentication and admin status
-    supabase.auth.getSession().then(async ({ data: { session }, error: sessionError }) => {
-      if (!mounted) return;
+        if (!isMounted) return;
 
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
-        return;
-      }
+        if (error || !session) {
+          setLoading(false);
+          // Wait a bit before redirecting to avoid race with login flow
+          setTimeout(() => {
+            if (isMounted) {
+              navigate("/auth", { replace: true });
+            }
+          }, 300);
+          return;
+        }
 
-      if (!session) {
-        console.log('No session found, redirecting to auth');
-        setLoading(false);
-        setCheckingAuth(false);
-        clearTimeout(timeout);
-        navigate("/auth");
-      } else {
-        console.log('Session found for user:', session.user.id);
         setUser(session.user);
-        setCheckingAuth(false);
         await checkAdminStatus(session.user.id);
-        clearTimeout(timeout);
+      } catch (err) {
+        console.error('Auth initialization error:', err);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
-    }).catch(err => {
-      if (!mounted) return;
-      console.error('Error getting session:', err);
-      setLoading(false);
-      setCheckingAuth(false);
-      clearTimeout(timeout);
-      navigate("/auth");
-    });
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
-
-      if (!session) {
-        setLoading(false);
-        setCheckingAuth(false);
-        navigate("/auth");
-      } else {
-        setUser(session.user);
-        setCheckingAuth(false);
-        await checkAdminStatus(session.user.id);
-      }
-    });
+    initAuth();
 
     return () => {
-      mounted = false;
-      clearTimeout(timeout);
-      subscription.unsubscribe();
+      isMounted = false;
     };
   }, [navigate]);
 
   const checkAdminStatus = async (userId: string) => {
-    console.log('Checking admin status for user:', userId);
-
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
@@ -120,14 +86,10 @@ const Admin = () => {
       return;
     }
 
-    console.log('Admin check result:', data);
-
     if (data) {
-      console.log('User is admin, fetching guests');
       setIsAdmin(true);
-      fetchGuests();
+      await fetchGuests();
     } else {
-      console.log('User is not admin');
       setIsAdmin(false);
       setLoading(false);
     }
@@ -345,20 +307,6 @@ const Admin = () => {
   const attendingCount = guests.filter(g => g.rsvp_status === 'attending').length;
   const pendingCount = guests.filter(g => g.rsvp_status === 'pending').length;
   const notAttendingCount = guests.filter(g => g.rsvp_status === 'not_attending').length;
-  const mealSummary = guests.reduce((acc, guest) => {
-    if (guest.rsvp_status !== 'attending') {
-      return acc;
-    }
-
-    const choice = guest.meal_choice || 'not_selected';
-    acc[choice] = (acc[choice] || 0) + 1;
-    return acc;
-  }, {
-    chicken: 0,
-    beef: 0,
-    vegetarian: 0,
-    not_selected: 0,
-  } as Record<string, number>);
 
   // Group guests by party
   const groupedGuests = guests.reduce((acc, guest) => {
@@ -369,15 +317,11 @@ const Admin = () => {
     return acc;
   }, {} as Record<string, GuestWithRSVP[]>);
 
-  // Show loading while checking auth or loading data
-  if (checkingAuth || (loading && isAdmin)) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <p className="text-foreground text-lg">Loading...</p>
-          <p className="text-muted-foreground text-sm mt-2">
-            {checkingAuth ? 'Checking authentication...' : 'Loading data...'}
-          </p>
         </div>
       </div>
     );
@@ -388,6 +332,9 @@ const Admin = () => {
       <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <Card className="max-w-md p-8 text-center">
           <h1 className="font-serif text-3xl mb-4 text-foreground">Access Denied</h1>
+          <p className="text-muted-foreground mb-6">
+            You don't have permission to access the admin dashboard. Please contact the site administrator to request access.
+          </p>
           <div className="flex gap-4 justify-center">
             <Button onClick={() => navigate("/")}>Back to Site</Button>
             <Button onClick={handleLogout} variant="outline">Logout</Button>
@@ -409,7 +356,7 @@ const Admin = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="p-6">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Total Guests</h3>
             <p className="text-3xl font-bold text-foreground">{guests.length}</p>
@@ -434,27 +381,6 @@ const Admin = () => {
               Not Attending
             </h3>
             <p className="text-3xl font-bold text-red-600">{notAttendingCount}</p>
-          </Card>
-          <Card className="p-6">
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Meal Selections</h3>
-            <div className="space-y-2 text-sm text-foreground">
-              <div className="flex items-center justify-between">
-                <span>Chicken</span>
-                <span className="font-semibold">{mealSummary.chicken}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Beef</span>
-                <span className="font-semibold">{mealSummary.beef}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Vegetarian</span>
-                <span className="font-semibold">{mealSummary.vegetarian}</span>
-              </div>
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span>Not selected</span>
-                <span className="font-semibold">{mealSummary.not_selected}</span>
-              </div>
-            </div>
           </Card>
         </div>
 

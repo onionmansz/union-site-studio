@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,47 +15,42 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/admin");
-      }
-    });
-  }, [navigate]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Welcome back!",
-          description: "You've successfully logged in.",
-        });
-        navigate("/admin");
+        // Wait for session to be fully established
+        if (data.session) {
+          toast({
+            title: "Welcome back!",
+            description: "You've successfully logged in.",
+          });
+
+          // Small delay to ensure session is persisted
+          setTimeout(() => {
+            navigate("/admin", { replace: true });
+          }, 150);
+        }
       } else {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`,
-          },
         });
 
         if (error) throw error;
 
         toast({
           title: "Account created!",
-          description: "You can now log in.",
+          description: "Please check your email to verify your account, then log in.",
         });
         setIsLogin(true);
       }
@@ -76,7 +71,7 @@ const Auth = () => {
         <h1 className="font-serif text-3xl text-center mb-6 text-foreground">
           {isLogin ? "Welcome Back" : "Create Account"}
         </h1>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
