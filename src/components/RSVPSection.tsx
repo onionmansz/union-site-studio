@@ -147,7 +147,7 @@ const RSVPSection = () => {
     }
 
     const attendingGuests = selectedGuests.filter(
-      (guestId) => attendanceSelections[guestId] !== "not_attending",
+      (guestId) => (attendanceSelections[guestId] || "attending") === "attending"
     );
 
     // Check that all attending guests have a meal choice
