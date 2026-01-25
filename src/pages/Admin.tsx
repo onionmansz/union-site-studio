@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Plus, Users, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Trash2, Plus, Users, CheckCircle, XCircle, Clock, UserPlus } from "lucide-react";
 
 interface GuestWithRSVP {
   id: string;
@@ -27,6 +28,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
+  const [bulkGuests, setBulkGuests] = useState("");
   const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -197,6 +199,51 @@ const Admin = () => {
     });
 
     setNewGuest({ name: "", email: "", party_id: "" });
+    fetchGuests();
+  };
+
+  const handleBulkAddGuests = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const names = bulkGuests
+      .split(/[\n,]+/)
+      .map(name => name.trim())
+      .filter(name => name.length > 0);
+
+    if (names.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please enter at least one guest name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const partyId = crypto.randomUUID();
+
+    const guestData = names.map(name => ({
+      party_id: partyId,
+      name,
+      email: null,
+    }));
+
+    const { error } = await supabase.from('guest_list').insert(guestData);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add guests.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: `Added ${names.length} guest${names.length > 1 ? 's' : ''} as a party!`,
+    });
+
+    setBulkGuests("");
     fetchGuests();
   };
 
@@ -395,6 +442,30 @@ const Admin = () => {
               </div>
             </div>
             <Button type="submit">Add Guest</Button>
+          </form>
+        </Card>
+
+        {/* Bulk Add Guests */}
+        <Card className="p-6 mb-8">
+          <h2 className="text-2xl font-serif mb-4 text-foreground flex items-center gap-2">
+            <UserPlus className="w-6 h-6" />
+            Bulk Add Guests
+          </h2>
+          <form onSubmit={handleBulkAddGuests} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="bulkGuests">Guest Names (one per line or comma-separated)</Label>
+              <Textarea
+                id="bulkGuests"
+                value={bulkGuests}
+                onChange={(e) => setBulkGuests(e.target.value)}
+                placeholder="John Doe&#10;Jane Doe&#10;Bob Smith"
+                rows={5}
+              />
+              <p className="text-sm text-muted-foreground">
+                All guests will be added as a single party.
+              </p>
+            </div>
+            <Button type="submit">Add All as Party</Button>
           </form>
         </Card>
 
