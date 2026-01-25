@@ -16,7 +16,6 @@ interface GuestListMember {
   name: string;
   email: string | null;
   party_id: string;
-  party_code: string | null;
 }
 
 const MEAL_CHOICES = [
@@ -55,13 +54,13 @@ const RSVPSection = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const input = searchInput.trim();
-    
+
     if (!input) {
       toast({
-        title: "Please enter your name or invitation code",
-        description: "Enter your name or the code from your invitation to find your party.",
+        title: "Please enter your name",
+        description: "Enter your name to find your party.",
         variant: "destructive",
       });
       return;
@@ -81,39 +80,28 @@ const RSVPSection = () => {
       return;
     }
 
-    // First try exact match on party_code (case-insensitive)
-    const codeMatch = allGuests.find(
-      guest => guest.party_code?.toLowerCase() === input.toLowerCase()
-    );
+    // Use fuzzy name matching
+    const fuse = new Fuse(allGuests, {
+      keys: ['name'],
+      threshold: 0.4,
+      includeScore: true,
+    });
 
-    let foundGuest: GuestListMember | null = null;
+    const results = fuse.search(input);
 
-    if (codeMatch) {
-      foundGuest = codeMatch;
-    } else {
-      // Fall back to fuzzy name matching
-      const fuse = new Fuse(allGuests, {
-        keys: ['name'],
-        threshold: 0.4,
-        includeScore: true,
+    if (results.length === 0) {
+      // Add artificial delay to prevent timing attacks
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      toast({
+        title: "Unable to find your information",
+        description: "Please check your spelling or contact the couple.",
+        variant: "destructive",
       });
-
-      const results = fuse.search(input);
-
-      if (results.length === 0) {
-        // Add artificial delay to prevent timing attacks
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        toast({
-          title: "Unable to find your information",
-          description: "Please check your spelling or invitation code, or contact the couple.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      foundGuest = results[0].item;
+      return;
     }
+
+    const foundGuest = results[0].item;
 
     // Fetch all party members
     const { data: party, error: partyError } = await supabase
@@ -288,7 +276,7 @@ const RSVPSection = () => {
               <form onSubmit={handleSearch} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="searchInput" className="text-foreground font-medium">
-                    Enter Your Name or Invitation Code *
+                    Enter Your Name *
                   </Label>
                   <Input
                     id="searchInput"
@@ -296,10 +284,10 @@ const RSVPSection = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                     required
                     className="border-sage/30 focus:border-rose"
-                    placeholder="Your full name or invitation code"
+                    placeholder="Your full name"
                   />
                   <p className="text-sm text-foreground">
-                    Enter your name or the code from your invitation to find your party.
+                    Enter your name to find your party.
                   </p>
                 </div>
 

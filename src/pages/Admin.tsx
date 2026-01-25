@@ -6,15 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Plus, Users, Edit2, Check, X, CheckCircle, XCircle, Clock } from "lucide-react";
-import { generatePartyCode, isValidPartyCode } from "@/lib/partyCodeGenerator";
+import { Trash2, Plus, Users, CheckCircle, XCircle, Clock } from "lucide-react";
 
 interface GuestWithRSVP {
   id: string;
   name: string;
   email: string | null;
   party_id: string;
-  party_code: string | null;
   rsvp_status: 'pending' | 'attending' | 'not_attending';
   meal_choice: string | null;
   dietary_restrictions: string | null;
@@ -29,9 +27,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
-  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; party_code: string | null; names: string[] }>>([]);
-  const [editingPartyCode, setEditingPartyCode] = useState<string | null>(null);
-  const [editedCode, setEditedCode] = useState("");
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -148,7 +144,6 @@ const Admin = () => {
         name: guest.name,
         email: guest.email,
         party_id: guest.party_id,
-        party_code: guest.party_code,
         rsvp_status: rsvp ? (rsvp.attendance === 'attending' ? 'attending' : 'not_attending') : 'pending',
         meal_choice: rsvp?.meal_choice || null,
         dietary_restrictions: rsvp?.dietary_restrictions || null,
@@ -165,43 +160,24 @@ const Admin = () => {
       if (existing) {
         existing.names.push(guest.name);
       } else {
-        acc.push({ party_id: guest.party_id, party_code: guest.party_code, names: [guest.name] });
+        acc.push({ party_id: guest.party_id, names: [guest.name] });
       }
       return acc;
-    }, [] as Array<{ party_id: string; party_code: string | null; names: string[] }>);
+    }, [] as Array<{ party_id: string; names: string[] }>);
     setExistingParties(parties);
 
     setLoading(false);
-  };
-
-  const generateUniquePartyCode = async (): Promise<string> => {
-    for (let attempt = 0; attempt < 10; attempt++) {
-      const code = generatePartyCode();
-      const { data } = await supabase
-        .from('guest_list')
-        .select('id')
-        .eq('party_code', code)
-        .maybeSingle();
-      if (!data) return code;
-    }
-    return `P${Date.now().toString(36).toUpperCase().slice(-6)}`;
   };
 
   const handleAddGuest = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const partyId = newGuest.party_id || crypto.randomUUID();
-    let partyCode: string | null = null;
-
-    if (!newGuest.party_id) {
-      partyCode = await generateUniquePartyCode();
-    }
 
     const guestData = {
       party_id: partyId,
       name: newGuest.name.trim(),
       email: newGuest.email.trim() || null,
-      party_code: partyCode,
     };
 
     const { error } = await supabase.from('guest_list').insert(guestData);
@@ -246,67 +222,6 @@ const Admin = () => {
       description: "Guest removed from the list.",
     });
 
-    fetchGuests();
-  };
-
-  const handleUpdatePartyCode = async (partyId: string, newCode: string) => {
-    const trimmedCode = newCode.trim().toUpperCase();
-
-    if (!trimmedCode) {
-      toast({
-        title: "Error",
-        description: "Party code cannot be empty.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!isValidPartyCode(trimmedCode)) {
-      toast({
-        title: "Error",
-        description: "Party code must be 4-10 uppercase letters and numbers.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { data: existingCode } = await supabase
-      .from('guest_list')
-      .select('party_id')
-      .eq('party_code', trimmedCode)
-      .neq('party_id', partyId)
-      .maybeSingle();
-
-    if (existingCode) {
-      toast({
-        title: "Error",
-        description: "This party code is already in use.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { error } = await supabase
-      .from('guest_list')
-      .update({ party_code: trimmedCode })
-      .eq('party_id', partyId);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update party code.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: `Party code updated to ${trimmedCode}`,
-    });
-
-    setEditingPartyCode(null);
-    setEditedCode("");
     fetchGuests();
   };
 
@@ -473,7 +388,7 @@ const Admin = () => {
                   <option value="">Create new party</option>
                   {existingParties.map((party) => (
                     <option key={party.party_id} value={party.party_id}>
-                      {party.party_code || 'NO CODE'} - {party.names.join(", ")}
+                      {party.names.join(", ")}
                     </option>
                   ))}
                 </select>
@@ -497,72 +412,17 @@ const Admin = () => {
           ) : (
             <div className="space-y-6">
               {Object.entries(groupedGuests).map(([partyId, partyGuests]) => {
-                const partyCode = partyGuests[0]?.party_code;
-                const isEditing = editingPartyCode === partyId;
                 // Get party message from first guest who has one
                 const partyMessage = partyGuests.find(g => g.message)?.message;
-
-                if (partyMessage) {
-                  console.log(`Party ${partyCode || partyId} has message:`, partyMessage);
-                }
 
                 return (
                   <div key={partyId} className="border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
                       <div className="flex items-center gap-3">
                         <Users className="w-5 h-5 text-muted-foreground" />
-                        <div className="flex items-center gap-2">
-                          {isEditing ? (
-                            <>
-                              <Input
-                                value={editedCode}
-                                onChange={(e) => setEditedCode(e.target.value.toUpperCase())}
-                                className="w-32 h-8 text-sm font-mono"
-                                placeholder="ABC123"
-                                maxLength={10}
-                              />
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleUpdatePartyCode(partyId, editedCode)}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Check className="w-4 h-4 text-green-600" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  setEditingPartyCode(null);
-                                  setEditedCode("");
-                                }}
-                                className="h-8 w-8 p-0"
-                              >
-                                <X className="w-4 h-4 text-red-600" />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <span className="text-xl font-bold font-mono text-foreground">
-                                {partyCode || "NO CODE"}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  setEditingPartyCode(partyId);
-                                  setEditedCode(partyCode || "");
-                                }}
-                                className="h-6 w-6 p-0"
-                              >
-                                <Edit2 className="w-3 h-3" />
-                              </Button>
-                              <span className="text-sm text-muted-foreground ml-2">
-                                ({partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'})
-                              </span>
-                            </>
-                          )}
-                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
+                        </span>
                       </div>
                     </div>
 
