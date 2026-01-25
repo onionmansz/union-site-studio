@@ -86,6 +86,43 @@ const WeddingDetails = () => {
               </p>
             </div>
           </div>
+
+          {/* Menu Section */}
+          <div className="mt-10 pt-8 border-t border-border">
+            <h4 className="font-serif text-2xl font-semibold text-foreground mb-8 text-center">
+              Menu
+            </h4>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {/* Cocktail Hour */}
+              <div className="text-center">
+                <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
+                <ul className="space-y-2 text-foreground">
+                  <li>Coconut shrimp with pineapple ginger dip</li>
+                  <li>Spanakopita - cheese and spinach, with tzatziki</li>
+                  <li>Fried chicken and cornbread with jalapeño and slaw</li>
+                  <li>BBQ pulled chicken slider with crunchy pickle slaw</li>
+                  <li>Korean beef skewers with sweet ginger sauce</li>
+                </ul>
+              </div>
+
+              {/* Dinner */}
+              <div className="text-center">
+                <h5 className="font-semibold text-foreground text-lg mb-4">Dinner</h5>
+                <div className="text-foreground space-y-4">
+                  <p>To start, a kale and brussels sprout caesar salad with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
+                  <div>
+                    <p className="mb-2">Followed by your choice of:</p>
+                    <ul className="space-y-1">
+                      <li>• Prime rib roast with crispy onion and red wine jus</li>
+                      <li>• Crispy chicken supreme stuffed with basil pesto, fontina and goat cheese</li>
+                    </ul>
+                    <p className="mt-2">Served with mashed potatoes and seasonal vegetables</p>
+                  </div>
+                  <p>For dessert, chef's homemade crème brûlée served with fresh berries and biscotti.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
