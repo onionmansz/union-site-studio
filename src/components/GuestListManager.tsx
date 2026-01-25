@@ -5,16 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Trash2, Plus, Users, Edit2, Check, X } from "lucide-react";
+import { Trash2, Plus, Users } from "lucide-react";
 import { z } from "zod";
-import { generatePartyCode, isValidPartyCode } from "@/lib/partyCodeGenerator";
 
 interface Guest {
   id: string;
   party_id: string;
   name: string;
   email: string | null;
-  party_code: string | null;
 }
 
 const guestSchema = z.object({
@@ -32,8 +30,6 @@ const GuestListManager = () => {
     party_id: ""
   });
   const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
-  const [editingPartyCode, setEditingPartyCode] = useState<string | null>(null);
-  const [editedCode, setEditedCode] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -72,108 +68,16 @@ const GuestListManager = () => {
     setLoading(false);
   };
 
-  const generateUniquePartyCode = async (): Promise<string> => {
-    // Try up to 10 times to generate a unique code
-    for (let attempt = 0; attempt < 10; attempt++) {
-      const code = generatePartyCode();
-
-      // Check if code already exists
-      const { data } = await supabase
-        .from('guest_list')
-        .select('id')
-        .eq('party_code', code)
-        .maybeSingle();
-
-      if (!data) {
-        return code;
-      }
-    }
-
-    // Fallback: use timestamp-based code
-    return `P${Date.now().toString(36).toUpperCase().slice(-6)}`;
-  };
-
-  const handleUpdatePartyCode = async (partyId: string, newCode: string) => {
-    const trimmedCode = newCode.trim().toUpperCase();
-
-    if (!trimmedCode) {
-      toast({
-        title: "Error",
-        description: "Party code cannot be empty.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!isValidPartyCode(trimmedCode)) {
-      toast({
-        title: "Error",
-        description: "Party code must be 4-10 uppercase letters and numbers.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if code is already in use by a different party
-    const { data: existingCode } = await supabase
-      .from('guest_list')
-      .select('party_id')
-      .eq('party_code', trimmedCode)
-      .neq('party_id', partyId)
-      .maybeSingle();
-
-    if (existingCode) {
-      toast({
-        title: "Error",
-        description: "This party code is already in use.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Update all guests in the party with the new code
-    const { error } = await supabase
-      .from('guest_list')
-      .update({ party_code: trimmedCode })
-      .eq('party_id', partyId);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update party code.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: `Party code updated to ${trimmedCode}`,
-    });
-
-    setEditingPartyCode(null);
-    setEditedCode("");
-    fetchGuests();
-  };
-
   const handleAddGuest = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Use selected party_id or generate a new one
     const partyId = newGuest.party_id || crypto.randomUUID();
 
-    // If creating a new party, check if we need to generate a party code
-    let partyCode: string | null = null;
-    if (!newGuest.party_id) {
-      // New party - generate a unique party code
-      partyCode = await generateUniquePartyCode();
-    }
-
     const guestData = {
       party_id: partyId,
       name: newGuest.name.trim(),
       email: newGuest.email.trim() || null,
-      party_code: partyCode,
     };
 
     // Validate with zod schema
@@ -312,69 +216,14 @@ const GuestListManager = () => {
           </p>
         ) : (
           <div className="space-y-6">
-            {Object.entries(groupedGuests).map(([partyId, partyGuests]) => {
-              const partyCode = partyGuests[0]?.party_code;
-              const isEditing = editingPartyCode === partyId;
-
-              return (
+            {Object.entries(groupedGuests).map(([partyId, partyGuests]) => (
                 <div key={partyId} className="border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <Users className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          {isEditing ? (
-                            <>
-                              <Input
-                                value={editedCode}
-                                onChange={(e) => setEditedCode(e.target.value.toUpperCase())}
-                                className="w-32 h-8 text-sm font-mono"
-                                placeholder="ABC123"
-                                maxLength={10}
-                              />
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => handleUpdatePartyCode(partyId, editedCode)}
-                                className="h-8 w-8 p-0"
-                              >
-                                <Check className="w-4 h-4 text-green-600" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  setEditingPartyCode(null);
-                                  setEditedCode("");
-                                }}
-                                className="h-8 w-8 p-0"
-                              >
-                                <X className="w-4 h-4 text-red-600" />
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <span className="text-lg font-bold font-mono text-foreground">
-                                {partyCode || "NO CODE"}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  setEditingPartyCode(partyId);
-                                  setEditedCode(partyCode || "");
-                                }}
-                                className="h-6 w-6 p-0"
-                              >
-                                <Edit2 className="w-3 h-3" />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
-                        </span>
-                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
+                      </span>
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -401,8 +250,7 @@ const GuestListManager = () => {
                     ))}
                   </div>
                 </div>
-              );
-            })}
+            ))}
           </div>
         )}
       </Card>
