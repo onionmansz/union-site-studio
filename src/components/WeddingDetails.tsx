@@ -109,7 +109,10 @@ const WeddingDetails = () => {
               <div className="text-center">
                 <h5 className="font-semibold text-foreground text-lg mb-4">Dinner</h5>
                 <div className="text-foreground space-y-4">
-                  <p>To start, a kale and brussels sprout caesar salad with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
+                  <div>
+                    <p className="mb-1">To start:</p>
+                    <p>A kale and brussels sprout caesar salad with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
+                  </div>
                   <div>
                     <p className="mb-2">Followed by your choice of:</p>
                     <ul className="space-y-1">
