@@ -92,30 +92,30 @@ const WeddingDetails = () => {
             <h4 className="font-serif text-2xl font-semibold text-foreground mb-8 text-center">
               Menu
             </h4>
-            <div className="flex flex-col items-center space-y-8">
+            <div className="max-w-2xl mx-auto space-y-8">
               {/* Cocktail Hour */}
-              <div className="text-left">
-                <h5 className="font-semibold text-foreground text-lg mb-4 text-center">Cocktail Hour</h5>
+              <div className="text-center">
+                <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
                 <ul className="space-y-2 text-foreground">
-                  <li>Coconut shrimp with pineapple ginger dip</li>
-                  <li>Spanakopita - cheese and spinach, with tzatziki</li>
-                  <li>Fried chicken and cornbread with jalapeño and slaw</li>
-                  <li>BBQ pulled chicken slider with crunchy pickle slaw</li>
-                  <li>Korean beef skewers with sweet ginger sauce</li>
+                  <li><span className="font-semibold">Coconut shrimp</span> with pineapple ginger dip</li>
+                  <li><span className="font-semibold">Spanakopita</span> - cheese and spinach, with tzatziki</li>
+                  <li><span className="font-semibold">Fried chicken and cornbread</span> with jalapeño and slaw</li>
+                  <li><span className="font-semibold">BBQ pulled chicken slider</span> with crunchy pickle slaw</li>
+                  <li><span className="font-semibold">Korean beef skewers</span> with sweet ginger sauce</li>
                 </ul>
               </div>
 
               {/* Dinner */}
-              <div className="text-left max-w-lg">
-                <h5 className="font-semibold text-foreground text-lg mb-4 text-center">Dinner</h5>
+              <div className="text-center">
+                <h5 className="font-semibold text-foreground text-lg mb-4">Dinner</h5>
                 <div className="text-foreground space-y-4">
                   <p>To start, a kale and brussels sprout caesar salad with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
                   <div>
                     <p className="mb-2">Followed by your choice of:</p>
-                    <ul className="space-y-1 ml-4">
-                      <li>• Prime rib roast with crispy onion and red wine jus</li>
-                      <li>• Crispy chicken supreme stuffed with basil pesto, fontina and goat cheese</li>
-                      <li>• Vegetarian stuffed pepper</li>
+                    <ul className="space-y-1">
+                      <li>• <span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
+                      <li>• <span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
+                      <li>• <span className="font-semibold">Vegetarian stuffed pepper</span></li>
                     </ul>
                     <p className="mt-2">Served with mashed potatoes and seasonal vegetables</p>
                   </div>
@@ -124,7 +124,7 @@ const WeddingDetails = () => {
               </div>
 
               {/* Dietary Accommodations */}
-              <div className="text-center pt-4 border-t border-border/50 w-full max-w-lg">
+              <div className="text-center pt-4 border-t border-border/50">
                 <p className="text-foreground text-sm italic">
                   Vegetarian and halal options are available. Please let us know your dietary requirements when you RSVP.
                 </p>
