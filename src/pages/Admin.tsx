@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2, Plus, Users, CheckCircle, XCircle, Clock, UserPlus, Edit2, Check, X } from "lucide-react";
+import { Trash2, Plus, Users, CheckCircle, XCircle, Clock, UserPlus } from "lucide-react";
 
 interface GuestWithRSVP {
   id: string;
@@ -29,10 +29,8 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
-  const [bulkGuests, setBulkGuests] = useState({ names: "", partyName: "" });
-  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; party_name: string | null; names: string[] }>>([]);
-  const [editingPartyName, setEditingPartyName] = useState<string | null>(null);
-  const [editedPartyName, setEditedPartyName] = useState("");
+  const [bulkGuests, setBulkGuests] = useState("");
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -209,7 +207,7 @@ const Admin = () => {
   const handleBulkAddGuests = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const names = bulkGuests.names
+    const names = bulkGuests
       .split(/[\n,]+/)
       .map(name => name.trim())
       .filter(name => name.length > 0);
@@ -224,11 +222,9 @@ const Admin = () => {
     }
 
     const partyId = crypto.randomUUID();
-    const partyName = bulkGuests.partyName.trim() || null;
 
     const guestData = names.map(name => ({
       party_id: partyId,
-      party_name: partyName,
       name,
       email: null,
     }));
@@ -249,34 +245,7 @@ const Admin = () => {
       description: `Added ${names.length} guest${names.length > 1 ? 's' : ''} as a party!`,
     });
 
-    setBulkGuests({ names: "", partyName: "" });
-    fetchGuests();
-  };
-
-  const handleUpdatePartyName = async (partyId: string, newName: string) => {
-    const trimmedName = newName.trim() || null;
-
-    const { error } = await supabase
-      .from('guest_list')
-      .update({ party_name: trimmedName })
-      .eq('party_id', partyId);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update party name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: trimmedName ? `Party name updated to "${trimmedName}"` : "Party name removed",
-    });
-
-    setEditingPartyName(null);
-    setEditedPartyName("");
+    setBulkGuests("");
     fetchGuests();
   };
 
@@ -485,27 +454,18 @@ const Admin = () => {
             Bulk Add Guests
           </h2>
           <form onSubmit={handleBulkAddGuests} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="partyName">Party Name (optional)</Label>
-                <Input
-                  id="partyName"
-                  value={bulkGuests.partyName}
-                  onChange={(e) => setBulkGuests({ ...bulkGuests, partyName: e.target.value })}
-                  placeholder="The Smith Family"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="bulkNames">Guest Names (one per line or comma-separated) *</Label>
-                <Textarea
-                  id="bulkNames"
-                  value={bulkGuests.names}
-                  onChange={(e) => setBulkGuests({ ...bulkGuests, names: e.target.value })}
-                  placeholder="John Doe&#10;Jane Doe&#10;Bob Smith"
-                  rows={4}
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="bulkGuests">Guest Names (one per line or comma-separated)</Label>
+              <Textarea
+                id="bulkGuests"
+                value={bulkGuests}
+                onChange={(e) => setBulkGuests(e.target.value)}
+                placeholder="John Doe&#10;Jane Doe&#10;Bob Smith"
+                rows={5}
+              />
+              <p className="text-sm text-muted-foreground">
+                All guests will be added as a single party.
+              </p>
             </div>
             <Button type="submit">Add All as Party</Button>
           </form>
