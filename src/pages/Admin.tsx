@@ -6,13 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Plus, Users, CheckCircle, XCircle, Clock } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Trash2, Plus, Users, CheckCircle, XCircle, Clock, UserPlus, Edit2, Check, X } from "lucide-react";
 
 interface GuestWithRSVP {
   id: string;
   name: string;
   email: string | null;
   party_id: string;
+  party_name: string | null;
   rsvp_status: 'pending' | 'attending' | 'not_attending';
   meal_choice: string | null;
   dietary_restrictions: string | null;
@@ -27,7 +29,10 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
-  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
+  const [bulkGuests, setBulkGuests] = useState({ names: "", partyName: "" });
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; party_name: string | null; names: string[] }>>([]);
+  const [editingPartyName, setEditingPartyName] = useState<string | null>(null);
+  const [editedPartyName, setEditedPartyName] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -144,6 +149,7 @@ const Admin = () => {
         name: guest.name,
         email: guest.email,
         party_id: guest.party_id,
+        party_name: guest.party_name || null,
         rsvp_status: rsvp ? (rsvp.attendance === 'attending' ? 'attending' : 'not_attending') : 'pending',
         meal_choice: rsvp?.meal_choice || null,
         dietary_restrictions: rsvp?.dietary_restrictions || null,
@@ -160,10 +166,10 @@ const Admin = () => {
       if (existing) {
         existing.names.push(guest.name);
       } else {
-        acc.push({ party_id: guest.party_id, names: [guest.name] });
+        acc.push({ party_id: guest.party_id, party_name: guest.party_name, names: [guest.name] });
       }
       return acc;
-    }, [] as Array<{ party_id: string; names: string[] }>);
+    }, [] as Array<{ party_id: string; party_name: string | null; names: string[] }>);
     setExistingParties(parties);
 
     setLoading(false);
@@ -197,6 +203,80 @@ const Admin = () => {
     });
 
     setNewGuest({ name: "", email: "", party_id: "" });
+    fetchGuests();
+  };
+
+  const handleBulkAddGuests = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const names = bulkGuests.names
+      .split(/[\n,]+/)
+      .map(name => name.trim())
+      .filter(name => name.length > 0);
+
+    if (names.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please enter at least one guest name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const partyId = crypto.randomUUID();
+    const partyName = bulkGuests.partyName.trim() || null;
+
+    const guestData = names.map(name => ({
+      party_id: partyId,
+      party_name: partyName,
+      name,
+      email: null,
+    }));
+
+    const { error } = await supabase.from('guest_list').insert(guestData);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add guests.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: `Added ${names.length} guest${names.length > 1 ? 's' : ''} as a party!`,
+    });
+
+    setBulkGuests({ names: "", partyName: "" });
+    fetchGuests();
+  };
+
+  const handleUpdatePartyName = async (partyId: string, newName: string) => {
+    const trimmedName = newName.trim() || null;
+
+    const { error } = await supabase
+      .from('guest_list')
+      .update({ party_name: trimmedName })
+      .eq('party_id', partyId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update party name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: trimmedName ? `Party name updated to "${trimmedName}"` : "Party name removed",
+    });
+
+    setEditingPartyName(null);
+    setEditedPartyName("");
     fetchGuests();
   };
 
@@ -388,13 +468,46 @@ const Admin = () => {
                   <option value="">Create new party</option>
                   {existingParties.map((party) => (
                     <option key={party.party_id} value={party.party_id}>
-                      {party.names.join(", ")}
+                      {party.party_name ? `${party.party_name} (${party.names.join(", ")})` : party.names.join(", ")}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
             <Button type="submit">Add Guest</Button>
+          </form>
+        </Card>
+
+        {/* Bulk Add Guests */}
+        <Card className="p-6 mb-8">
+          <h2 className="text-2xl font-serif mb-4 text-foreground flex items-center gap-2">
+            <UserPlus className="w-6 h-6" />
+            Bulk Add Guests
+          </h2>
+          <form onSubmit={handleBulkAddGuests} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="partyName">Party Name (optional)</Label>
+                <Input
+                  id="partyName"
+                  value={bulkGuests.partyName}
+                  onChange={(e) => setBulkGuests({ ...bulkGuests, partyName: e.target.value })}
+                  placeholder="The Smith Family"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bulkNames">Guest Names (one per line or comma-separated) *</Label>
+                <Textarea
+                  id="bulkNames"
+                  value={bulkGuests.names}
+                  onChange={(e) => setBulkGuests({ ...bulkGuests, names: e.target.value })}
+                  placeholder="John Doe&#10;Jane Doe&#10;Bob Smith"
+                  rows={4}
+                  required
+                />
+              </div>
+            </div>
+            <Button type="submit">Add All as Party</Button>
           </form>
         </Card>
 
@@ -414,15 +527,64 @@ const Admin = () => {
               {Object.entries(groupedGuests).map(([partyId, partyGuests]) => {
                 // Get party message from first guest who has one
                 const partyMessage = partyGuests.find(g => g.message)?.message;
+                const partyName = partyGuests[0]?.party_name;
+                const isEditingName = editingPartyName === partyId;
 
                 return (
                   <div key={partyId} className="border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
                       <div className="flex items-center gap-3">
                         <Users className="w-5 h-5 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">
-                          {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
-                        </span>
+                        {isEditingName ? (
+                          <div className="flex items-center gap-2">
+                            <Input
+                              value={editedPartyName}
+                              onChange={(e) => setEditedPartyName(e.target.value)}
+                              className="w-48 h-8 text-sm"
+                              placeholder="Party name"
+                              autoFocus
+                            />
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleUpdatePartyName(partyId, editedPartyName)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Check className="w-4 h-4 text-green-600" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditingPartyName(null);
+                                setEditedPartyName("");
+                              }}
+                              className="h-8 w-8 p-0"
+                            >
+                              <X className="w-4 h-4 text-red-600" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-foreground">
+                              {partyName || "Unnamed Party"}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setEditingPartyName(partyId);
+                                setEditedPartyName(partyName || "");
+                              }}
+                              className="h-6 w-6 p-0"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </Button>
+                            <span className="text-sm text-muted-foreground">
+                              ({partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'})
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
