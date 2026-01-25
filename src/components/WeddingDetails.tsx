@@ -117,7 +117,7 @@ const WeddingDetails = () => {
                       <li><span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
                       <li><span className="font-semibold">Vegetarian stuffed pepper</span></li>
                     </ul>
-                    <p className="mt-2">Served with mashed potatoes and seasonal vegetables</p>
+                    <p className="mt-2">All entrées served with mashed potatoes and seasonal vegetables.</p>
                   </div>
                   <p>For dessert, chef's homemade crème brûlée served with fresh berries and biscotti.</p>
                 </div>
@@ -126,7 +126,7 @@ const WeddingDetails = () => {
               {/* Dietary Accommodations */}
               <div className="text-center pt-4 border-t border-border/50">
                 <p className="text-foreground text-sm italic">
-                  Vegetarian and halal options are available. Please let us know your dietary requirements when you RSVP.
+                  Vegetarian and halal options are available. Please indicate any dietary restrictions or allergies when you RSVP.
                 </p>
               </div>
             </div>
