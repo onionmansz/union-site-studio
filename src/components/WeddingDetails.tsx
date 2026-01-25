@@ -92,7 +92,7 @@ const WeddingDetails = () => {
             <h4 className="font-serif text-2xl font-semibold text-foreground mb-8 text-center">
               Menu
             </h4>
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-8">
               {/* Cocktail Hour */}
               <div className="text-center">
                 <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
@@ -115,11 +115,19 @@ const WeddingDetails = () => {
                     <ul className="space-y-1">
                       <li>• Prime rib roast with crispy onion and red wine jus</li>
                       <li>• Crispy chicken supreme stuffed with basil pesto, fontina and goat cheese</li>
+                      <li>• Vegetarian stuffed pepper</li>
                     </ul>
                     <p className="mt-2">Served with mashed potatoes and seasonal vegetables</p>
                   </div>
                   <p>For dessert, chef's homemade crème brûlée served with fresh berries and biscotti.</p>
                 </div>
+              </div>
+
+              {/* Dietary Accommodations */}
+              <div className="text-center pt-4 border-t border-border/50">
+                <p className="text-foreground text-sm italic">
+                  Vegetarian and halal options are available. Please let us know your dietary requirements when you RSVP.
+                </p>
               </div>
             </div>
           </div>
