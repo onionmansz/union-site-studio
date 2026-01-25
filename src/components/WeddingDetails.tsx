@@ -100,7 +100,7 @@ const WeddingDetails = () => {
                   <li><span className="font-semibold">Coconut shrimp</span> with pineapple ginger dip</li>
                   <li><span className="font-semibold">Spanakopita</span> - cheese and spinach, with tzatziki</li>
                   <li><span className="font-semibold">Fried chicken and cornbread</span> with jalapeño and slaw</li>
-                  <li><span className="font-semibold">BBQ pulled chicken slider</span> with crunchy pickle slaw</li>
+                  <li><span className="font-semibold">BBQ pulled chicken sliders</span> with crunchy pickle slaw</li>
                   <li><span className="font-semibold">Korean beef skewers</span> with sweet ginger sauce</li>
                 </ul>
               </div>
@@ -113,9 +113,9 @@ const WeddingDetails = () => {
                   <div>
                     <p className="mb-2">Followed by your choice of:</p>
                     <ul className="space-y-1">
-                      <li>• <span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
-                      <li>• <span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
-                      <li>• <span className="font-semibold">Vegetarian stuffed pepper</span></li>
+                      <li><span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
+                      <li><span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
+                      <li><span className="font-semibold">Vegetarian stuffed pepper</span></li>
                     </ul>
                     <p className="mt-2">Served with mashed potatoes and seasonal vegetables</p>
                   </div>
