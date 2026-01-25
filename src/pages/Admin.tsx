@@ -14,7 +14,6 @@ interface GuestWithRSVP {
   name: string;
   email: string | null;
   party_id: string;
-  party_name: string | null;
   rsvp_status: 'pending' | 'attending' | 'not_attending';
   meal_choice: string | null;
   dietary_restrictions: string | null;
@@ -147,7 +146,6 @@ const Admin = () => {
         name: guest.name,
         email: guest.email,
         party_id: guest.party_id,
-        party_name: guest.party_name || null,
         rsvp_status: rsvp ? (rsvp.attendance === 'attending' ? 'attending' : 'not_attending') : 'pending',
         meal_choice: rsvp?.meal_choice || null,
         dietary_restrictions: rsvp?.dietary_restrictions || null,
@@ -164,10 +162,10 @@ const Admin = () => {
       if (existing) {
         existing.names.push(guest.name);
       } else {
-        acc.push({ party_id: guest.party_id, party_name: guest.party_name, names: [guest.name] });
+        acc.push({ party_id: guest.party_id, names: [guest.name] });
       }
       return acc;
-    }, [] as Array<{ party_id: string; party_name: string | null; names: string[] }>);
+    }, [] as Array<{ party_id: string; names: string[] }>);
     setExistingParties(parties);
 
     setLoading(false);
@@ -437,7 +435,7 @@ const Admin = () => {
                   <option value="">Create new party</option>
                   {existingParties.map((party) => (
                     <option key={party.party_id} value={party.party_id}>
-                      {party.party_name ? `${party.party_name} (${party.names.join(", ")})` : party.names.join(", ")}
+                      {party.names.join(", ")}
                     </option>
                   ))}
                 </select>
@@ -487,64 +485,15 @@ const Admin = () => {
               {Object.entries(groupedGuests).map(([partyId, partyGuests]) => {
                 // Get party message from first guest who has one
                 const partyMessage = partyGuests.find(g => g.message)?.message;
-                const partyName = partyGuests[0]?.party_name;
-                const isEditingName = editingPartyName === partyId;
 
                 return (
                   <div key={partyId} className="border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
                       <div className="flex items-center gap-3">
                         <Users className="w-5 h-5 text-muted-foreground" />
-                        {isEditingName ? (
-                          <div className="flex items-center gap-2">
-                            <Input
-                              value={editedPartyName}
-                              onChange={(e) => setEditedPartyName(e.target.value)}
-                              className="w-48 h-8 text-sm"
-                              placeholder="Party name"
-                              autoFocus
-                            />
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleUpdatePartyName(partyId, editedPartyName)}
-                              className="h-8 w-8 p-0"
-                            >
-                              <Check className="w-4 h-4 text-green-600" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                setEditingPartyName(null);
-                                setEditedPartyName("");
-                              }}
-                              className="h-8 w-8 p-0"
-                            >
-                              <X className="w-4 h-4 text-red-600" />
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-foreground">
-                              {partyName || "Unnamed Party"}
-                            </span>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                setEditingPartyName(partyId);
-                                setEditedPartyName(partyName || "");
-                              }}
-                              className="h-6 w-6 p-0"
-                            >
-                              <Edit2 className="w-3 h-3" />
-                            </Button>
-                            <span className="text-sm text-muted-foreground">
-                              ({partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'})
-                            </span>
-                          </div>
-                        )}
+                        <span className="text-sm text-muted-foreground">
+                          {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
+                        </span>
                       </div>
                     </div>
 
