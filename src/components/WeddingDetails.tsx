@@ -86,52 +86,51 @@ const WeddingDetails = () => {
               </p>
             </div>
           </div>
+        </div>
 
-          {/* Menu Section */}
-          <div className="mt-10 pt-8 border-t border-border">
-            <h4 className="font-serif text-2xl font-semibold text-foreground mb-8 text-center">
-              Menu
-            </h4>
-            <div className="max-w-2xl mx-auto space-y-8">
-              {/* Cocktail Hour */}
-              <div className="text-center">
-                <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
-                <ul className="space-y-2 text-foreground">
-                  <li><span className="font-semibold">Coconut shrimp</span> with pineapple ginger dip</li>
-                  <li><span className="font-semibold">Spanakopita</span> - cheese and spinach, with tzatziki</li>
-                  <li><span className="font-semibold">Fried chicken and cornbread</span> with jalapeño and slaw</li>
-                  <li><span className="font-semibold">BBQ pulled chicken sliders</span> with crunchy pickle slaw</li>
-                  <li><span className="font-semibold">Korean beef skewers</span> with sweet ginger sauce</li>
-                </ul>
-              </div>
+        <div className="mt-10 text-center bg-card p-8 rounded-lg shadow-romantic">
+          <h4 className="font-serif text-2xl font-semibold text-foreground mb-8 text-center">
+            Menu
+          </h4>
+          <div className="max-w-2xl mx-auto space-y-8">
+            {/* Cocktail Hour */}
+            <div className="text-center">
+              <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
+              <ul className="space-y-2 text-foreground">
+                <li><span className="font-semibold">Coconut shrimp</span> with pineapple ginger dip</li>
+                <li><span className="font-semibold">Spanakopita</span> - cheese and spinach, with tzatziki</li>
+                <li><span className="font-semibold">Fried chicken and cornbread</span> with jalapeño and slaw</li>
+                <li><span className="font-semibold">BBQ pulled chicken sliders</span> with crunchy pickle slaw</li>
+                <li><span className="font-semibold">Korean beef skewers</span> with sweet ginger sauce</li>
+              </ul>
+            </div>
 
-              {/* Dinner */}
-              <div className="text-center">
-                <h5 className="font-semibold text-foreground text-lg mb-4">Dinner</h5>
-                <div className="text-foreground space-y-4">
-                  <div>
-                    <p className="mb-1">To start:</p>
-                    <p>A <span className="font-semibold">kale and brussels sprout caesar salad </span> with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
-                  </div>
-                  <div>
-                    <p className="mb-2">Followed by your choice of:</p>
-                    <ul className="space-y-1">
-                      <li><span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
-                      <li><span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
-                      <li><span className="font-semibold">Vegetarian stuffed pepper</span></li>
-                    </ul>
-                    <p className="mt-2">All entrées served with mashed potatoes and seasonal vegetables.</p>
-                  </div>
-                  <p>For dessert, chef's homemade crème brûlée served with fresh berries and biscotti.</p>
+            {/* Dinner */}
+            <div className="text-center">
+              <h5 className="font-semibold text-foreground text-lg mb-4">Dinner</h5>
+              <div className="text-foreground space-y-4">
+                <div>
+                  <p className="mb-1">To start:</p>
+                  <p>A <span className="font-semibold">kale and brussels sprout caesar salad </span> with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
                 </div>
+                <div>
+                  <p className="mb-2">Followed by your choice of:</p>
+                  <ul className="space-y-1">
+                    <li><span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
+                    <li><span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
+                    <li><span className="font-semibold">Vegetarian stuffed pepper</span></li>
+                  </ul>
+                  <p className="mt-2">All entrées served with mashed potatoes and seasonal vegetables.</p>
+                </div>
+                <p>For dessert, chef's homemade crème brûlée served with fresh berries and biscotti.</p>
               </div>
+            </div>
 
-              {/* Dietary Accommodations */}
-              <div className="text-center pt-4 border-t border-border/50">
-                <p className="text-foreground text-sm italic">
-                  Vegetarian and halal options are available. Please indicate any dietary restrictions or allergies when you RSVP.
-                </p>
-              </div>
+            {/* Dietary Accommodations */}
+            <div className="text-center pt-4 border-t border-border/50">
+              <p className="text-foreground text-sm italic">
+                Vegetarian and halal options are available. Please indicate any dietary restrictions or allergies when you RSVP.
+              </p>
             </div>
           </div>
         </div>
