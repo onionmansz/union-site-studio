@@ -28,11 +28,9 @@ const Admin = () => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "", party_name: "" });
+  const [newGuest, setNewGuest] = useState({ name: "", email: "", party_id: "" });
   const [bulkGuests, setBulkGuests] = useState("");
-  const [bulkPartyName, setBulkPartyName] = useState("");
-  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[]; party_name: string }>>([]);
-  const [partyNameEdits, setPartyNameEdits] = useState<Record<string, string>>({});
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -165,19 +163,12 @@ const Admin = () => {
       const existing = acc.find(p => p.party_id === guest.party_id);
       if (existing) {
         existing.names.push(guest.name);
-        if (!existing.party_name && guest.party_code) {
-          existing.party_name = guest.party_code;
-        }
       } else {
-        acc.push({ party_id: guest.party_id, names: [guest.name], party_name: guest.party_code || "" });
+        acc.push({ party_id: guest.party_id, names: [guest.name] });
       }
       return acc;
-    }, [] as Array<{ party_id: string; names: string[]; party_name: string }>);
+    }, [] as Array<{ party_id: string; names: string[] }>);
     setExistingParties(parties);
-    setPartyNameEdits(parties.reduce((acc, party) => {
-      acc[party.party_id] = party.party_name;
-      return acc;
-    }, {} as Record<string, string>));
 
     setLoading(false);
   };
@@ -189,7 +180,6 @@ const Admin = () => {
 
     const guestData = {
       party_id: partyId,
-      party_code: newGuest.party_name.trim() || null,
       name: newGuest.name.trim(),
       email: newGuest.email.trim() || null,
     };
@@ -210,7 +200,7 @@ const Admin = () => {
       description: "Guest added to the list!",
     });
 
-    setNewGuest({ name: "", email: "", party_id: "", party_name: "" });
+    setNewGuest({ name: "", email: "", party_id: "" });
     fetchGuests();
   };
 
@@ -235,7 +225,6 @@ const Admin = () => {
 
     const guestData = names.map(name => ({
       party_id: partyId,
-      party_code: bulkPartyName.trim() || null,
       name,
       email: null,
     }));
@@ -257,7 +246,6 @@ const Admin = () => {
     });
 
     setBulkGuests("");
-    setBulkPartyName("");
     fetchGuests();
   };
 
@@ -281,40 +269,6 @@ const Admin = () => {
     toast({
       title: "Success",
       description: "Guest removed from the list.",
-    });
-
-    fetchGuests();
-  };
-
-  const handlePartyNameSave = async (partyId: string) => {
-    const partyName = (partyNameEdits[partyId] || "").trim();
-
-    if (partyName.length > 100) {
-      toast({
-        title: "Validation Error",
-        description: "Party name must be less than 100 characters.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { error } = await supabase
-      .from('guest_list')
-      .update({ party_code: partyName || null })
-      .eq('party_id', partyId);
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update party name.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    toast({
-      title: "Success",
-      description: "Party name updated.",
     });
 
     fetchGuests();
@@ -479,11 +433,9 @@ const Admin = () => {
                   value={newGuest.party_id}
                   onChange={(e) => {
                     const selectedPartyId = e.target.value;
-                    const selectedParty = existingParties.find(party => party.party_id === selectedPartyId);
                     setNewGuest({
                       ...newGuest,
                       party_id: selectedPartyId,
-                      party_name: selectedParty?.party_name || "",
                     });
                   }}
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -491,20 +443,10 @@ const Admin = () => {
                   <option value="">Create new party</option>
                   {existingParties.map((party) => (
                     <option key={party.party_id} value={party.party_id}>
-                      {party.party_name ? `${party.party_name} (${party.names.join(", ")})` : party.names.join(", ")}
+                      {party.names.join(", ")}
                     </option>
                   ))}
                 </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="party_name">Party Name (optional)</Label>
-                <Input
-                  id="party_name"
-                  value={newGuest.party_name}
-                  onChange={(e) => setNewGuest({ ...newGuest, party_name: e.target.value })}
-                  placeholder="The Smiths"
-                  maxLength={100}
-                />
               </div>
             </div>
             <Button type="submit">Add Guest</Button>
@@ -530,16 +472,6 @@ const Admin = () => {
               <p className="text-sm text-muted-foreground">
                 All guests will be added as a single party.
               </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bulkPartyName">Party Name (optional)</Label>
-              <Input
-                id="bulkPartyName"
-                value={bulkPartyName}
-                onChange={(e) => setBulkPartyName(e.target.value)}
-                placeholder="The Johnsons"
-                maxLength={100}
-              />
             </div>
             <Button type="submit">Add All as Party</Button>
           </form>
@@ -570,29 +502,6 @@ const Admin = () => {
                         <span className="text-sm text-muted-foreground">
                           {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
                         </span>
-                      </div>
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-                        <div className="flex-1">
-                          <Label htmlFor={`admin-party-name-${partyId}`}>Party Name</Label>
-                          <Input
-                            id={`admin-party-name-${partyId}`}
-                            value={partyNameEdits[partyId] ?? ""}
-                            onChange={(e) => setPartyNameEdits((prev) => ({
-                              ...prev,
-                              [partyId]: e.target.value,
-                            }))}
-                            placeholder="e.g. The Johnsons"
-                            maxLength={100}
-                          />
-                        </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="sm:mb-[2px]"
-                          onClick={() => handlePartyNameSave(partyId)}
-                        >
-                          Save Party Name
-                        </Button>
                       </div>
                     </div>
 
