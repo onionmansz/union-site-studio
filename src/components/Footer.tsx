@@ -27,7 +27,7 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-2">RSVP Deadline</h4>
             <p className="opacity-80">Please respond by</p>
-            <p className="text-foreground font-semibold">February 28th, 2026</p>
+            <p className="text-foreground font-semibold">March 21st, 2026</p>
           </div>
         </div>
       </div>

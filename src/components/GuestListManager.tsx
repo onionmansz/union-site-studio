@@ -11,12 +11,14 @@ import { z } from "zod";
 interface Guest {
   id: string;
   party_id: string;
+  party_code: string | null;
   name: string;
   email: string | null;
 }
 
 const guestSchema = z.object({
   party_id: z.string().uuid("Invalid party ID"),
+  party_code: z.string().trim().max(100, "Party name must be less than 100 characters").optional().nullable(),
   name: z.string().trim().min(1, "Name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters").optional().nullable().or(z.literal("")),
 });
@@ -28,8 +30,10 @@ const GuestListManager = () => {
     name: "",
     email: "",
     party_id: "",
+    party_name: "",
   });
-  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
+  const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[]; party_name: string }>>([]);
+  const [partyNameEdits, setPartyNameEdits] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   useEffect(() => {
@@ -58,12 +62,19 @@ const GuestListManager = () => {
         const existing = acc.find(p => p.party_id === guest.party_id);
         if (existing) {
           existing.names.push(guest.name);
+          if (!existing.party_name && guest.party_code) {
+            existing.party_name = guest.party_code;
+          }
         } else {
-          acc.push({ party_id: guest.party_id, names: [guest.name] });
+          acc.push({ party_id: guest.party_id, names: [guest.name], party_name: guest.party_code || "" });
         }
         return acc;
-      }, [] as Array<{ party_id: string; names: string[] }>);
+      }, [] as Array<{ party_id: string; names: string[]; party_name: string }>);
       setExistingParties(parties);
+      setPartyNameEdits(parties.reduce((acc, party) => {
+        acc[party.party_id] = party.party_name;
+        return acc;
+      }, {} as Record<string, string>));
     }
     setLoading(false);
   };
@@ -76,6 +87,7 @@ const GuestListManager = () => {
 
     const guestData = {
       party_id: partyId,
+      party_code: newGuest.party_name.trim() || null,
       name: newGuest.name.trim(),
       email: newGuest.email.trim() || null,
     };
@@ -110,7 +122,7 @@ const GuestListManager = () => {
       description: "Guest added to the list!",
     });
 
-    setNewGuest({ name: "", email: "", party_id: "" });
+    setNewGuest({ name: "", email: "", party_id: "", party_name: "" });
     fetchGuests();
   };
 
@@ -139,6 +151,40 @@ const GuestListManager = () => {
     fetchGuests();
   };
 
+  const handlePartyNameSave = async (partyId: string) => {
+    const partyName = (partyNameEdits[partyId] || "").trim();
+
+    if (partyName.length > 100) {
+      toast({
+        title: "Validation Error",
+        description: "Party name must be less than 100 characters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase
+      .from('guest_list')
+      .update({ party_code: partyName || null })
+      .eq('party_id', partyId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update party name.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Party name updated.",
+    });
+
+    fetchGuests();
+  };
+
   const groupedGuests = guests.reduce((acc, guest) => {
     if (!acc[guest.party_id]) {
       acc[guest.party_id] = [];
@@ -159,7 +205,7 @@ const GuestListManager = () => {
           Add New Guest
         </h2>
         <form onSubmit={handleAddGuest} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Guest Name *</Label>
               <Input
@@ -185,18 +231,39 @@ const GuestListManager = () => {
               <select
                 id="party_id"
                 value={newGuest.party_id}
-                onChange={(e) => setNewGuest({ ...newGuest, party_id: e.target.value })}
+                onChange={(e) => {
+                  const selectedPartyId = e.target.value;
+                  const selectedParty = existingParties.find(party => party.party_id === selectedPartyId);
+                  setNewGuest({
+                    ...newGuest,
+                    party_id: selectedPartyId,
+                    party_name: selectedParty?.party_name || "",
+                  });
+                }}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="">Create new party</option>
                 {existingParties.map((party) => (
                   <option key={party.party_id} value={party.party_id}>
-                    {party.names.join(", ")}
+                    {party.party_name ? `${party.party_name} (${party.names.join(", ")})` : party.names.join(", ")}
                   </option>
                 ))}
               </select>
               <p className="text-xs text-muted-foreground">
                 Select a party to add this guest to, or leave blank to create a new party
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="party_name">Party Name (optional)</Label>
+              <Input
+                id="party_name"
+                value={newGuest.party_name}
+                onChange={(e) => setNewGuest({ ...newGuest, party_name: e.target.value })}
+                placeholder="The Smiths"
+                maxLength={100}
+              />
+              <p className="text-xs text-muted-foreground">
+                Use a friendly party name so guests can recognize their group when RSVPing.
               </p>
             </div>
           </div>
@@ -218,12 +285,35 @@ const GuestListManager = () => {
           <div className="space-y-6">
             {Object.entries(groupedGuests).map(([partyId, partyGuests]) => (
                 <div key={partyId} className="border border-border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex flex-col gap-3 mb-4">
                     <div className="flex items-center gap-3">
                       <Users className="w-4 h-4 text-muted-foreground" />
                       <span className="text-sm text-muted-foreground">
                         {partyGuests.length} {partyGuests.length === 1 ? 'guest' : 'guests'}
                       </span>
+                    </div>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+                      <div className="flex-1">
+                        <Label htmlFor={`party-name-${partyId}`}>Party Name</Label>
+                        <Input
+                          id={`party-name-${partyId}`}
+                          value={partyNameEdits[partyId] ?? ""}
+                          onChange={(e) => setPartyNameEdits((prev) => ({
+                            ...prev,
+                            [partyId]: e.target.value,
+                          }))}
+                          placeholder="e.g. The Johnsons"
+                          maxLength={100}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="sm:mb-[2px]"
+                        onClick={() => handlePartyNameSave(partyId)}
+                      >
+                        Save Party Name
+                      </Button>
                     </div>
                   </div>
                   <div className="space-y-2">
