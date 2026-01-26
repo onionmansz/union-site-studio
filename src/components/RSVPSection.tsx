@@ -15,12 +15,13 @@ interface GuestListMember {
   id: string;
   name: string;
   email: string | null;
+  party_code: string | null;
   party_id: string;
 }
 
 const MEAL_CHOICES = [
-  { value: "chicken", label: "Chicken" },
-  { value: "beef", label: "Beef" },
+  { value: "chicken", label: "Crispy chicken supreme" },
+  { value: "beef", label: "Prime rib roast" },
   { value: "vegetarian", label: "Vegetarian" },
 ] as const;
 
@@ -49,6 +50,7 @@ const RSVPSection = () => {
   const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not-attending">>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
+  const [partyName, setPartyName] = useState<string | null>(null);
   
   const { toast } = useToast();
 
@@ -119,6 +121,8 @@ const RSVPSection = () => {
     }
 
     setPartyMembers(party);
+    const resolvedPartyName = foundGuest.party_code || party.find(member => member.party_code)?.party_code || null;
+    setPartyName(resolvedPartyName);
     setShowPartyForm(true);
   };
 
@@ -228,6 +232,7 @@ const RSVPSection = () => {
     setAttendanceSelections({});
     setMessage("");
     setShowPartyForm(false);
+    setPartyName(null);
   };
 
   const toggleGuest = (guestId: string) => {
@@ -304,8 +309,14 @@ const RSVPSection = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <Label className="text-foreground font-medium text-lg">
-                    Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
+                    Your Party{partyName ? `: ${partyName}` : ""} ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
+                  <div className="rounded-lg border border-border bg-muted/50 p-4 text-sm text-foreground">
+                    <p className="font-medium">Party Name</p>
+                    <p className={partyName ? "text-foreground" : "text-muted-foreground"}>
+                      {partyName || "Not set yet. Please contact the couple if you'd like it updated."}
+                    </p>
+                  </div>
                   <p className="text-sm text-foreground">
                     Select who you're responding for:
                   </p>
@@ -459,6 +470,7 @@ const RSVPSection = () => {
                       setMealChoices({});
                       setDietaryRestrictions({});
                       setAttendanceSelections({});
+                      setPartyName(null);
                     }}
                     className="flex-1"
                   >
