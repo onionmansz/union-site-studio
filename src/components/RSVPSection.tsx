@@ -15,6 +15,7 @@ interface GuestListMember {
   id: string;
   name: string;
   email: string | null;
+  party_code: string | null;
   party_id: string;
 }
 
@@ -49,6 +50,7 @@ const RSVPSection = () => {
   const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not-attending">>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
+  const [partyName, setPartyName] = useState<string | null>(null);
   
   const { toast } = useToast();
 
@@ -119,6 +121,8 @@ const RSVPSection = () => {
     }
 
     setPartyMembers(party);
+    const resolvedPartyName = foundGuest.party_code || party.find(member => member.party_code)?.party_code || null;
+    setPartyName(resolvedPartyName);
     setShowPartyForm(true);
   };
 
@@ -228,6 +232,7 @@ const RSVPSection = () => {
     setAttendanceSelections({});
     setMessage("");
     setShowPartyForm(false);
+    setPartyName(null);
   };
 
   const toggleGuest = (guestId: string) => {
@@ -304,7 +309,7 @@ const RSVPSection = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <Label className="text-foreground font-medium text-lg">
-                    Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
+                    Your Party{partyName ? `: ${partyName}` : ""} ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
                   <p className="text-sm text-foreground">
                     Select who you're responding for:
@@ -459,6 +464,7 @@ const RSVPSection = () => {
                       setMealChoices({});
                       setDietaryRestrictions({});
                       setAttendanceSelections({});
+                      setPartyName(null);
                     }}
                     className="flex-1"
                   >
