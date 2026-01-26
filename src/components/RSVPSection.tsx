@@ -20,8 +20,8 @@ interface GuestListMember {
 }
 
 const MEAL_CHOICES = [
-  { value: "chicken", label: "Chicken" },
-  { value: "beef", label: "Beef" },
+  { value: "chicken", label: "Crispy chicken supreme" },
+  { value: "beef", label: "Prime rib roast" },
   { value: "vegetarian", label: "Vegetarian" },
 ] as const;
 
