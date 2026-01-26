@@ -27,7 +27,7 @@ const GuestListManager = () => {
   const [newGuest, setNewGuest] = useState({
     name: "",
     email: "",
-    party_id: ""
+    party_id: "",
   });
   const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[] }>>([]);
   const { toast } = useToast();
