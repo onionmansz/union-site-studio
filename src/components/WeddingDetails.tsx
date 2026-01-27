@@ -129,7 +129,7 @@ const WeddingDetails = () => {
             {/* Dietary Accommodations */}
             <div className="text-center pt-4 border-t border-border/50">
               <p className="text-foreground text-sm italic">
-                Vegetarian and halal options are available. Please indicate any dietary restrictions or allergies when you RSVP.
+                Halal options are available. Please indicate any dietary restrictions or allergies when you RSVP.
               </p>
             </div>
           </div>

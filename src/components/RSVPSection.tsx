@@ -423,14 +423,8 @@ const RSVPSection = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
                   <Label className="text-foreground font-medium text-lg">
-                    Your Party{partyName ? `: ${partyName}` : ""} ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
+                    Your Party ({partyMembers.length} {partyMembers.length === 1 ? 'person' : 'people'})
                   </Label>
-                  <div className="rounded-lg border border-border bg-muted/50 p-4 text-sm text-foreground">
-                    <p className="font-medium">Party Name</p>
-                    <p className={partyName ? "text-foreground" : "text-muted-foreground"}>
-                      {partyName || "Not set yet. Please contact the couple if you'd like it updated."}
-                    </p>
-                  </div>
                   <p className="text-sm text-foreground">
                     Select who you're responding for:
                   </p>
@@ -586,7 +580,6 @@ const RSVPSection = () => {
                       setMealChoices({});
                       setDietaryRestrictions({});
                       setAttendanceSelections({});
-                      setPartyName(null);
                     }}
                     className="flex-1"
                   >
