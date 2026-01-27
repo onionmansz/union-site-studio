@@ -19,6 +19,11 @@ interface GuestListMember {
   party_id: string;
 }
 
+interface PartyMatch {
+  matchedGuest: GuestListMember;
+  partyMembers: GuestListMember[];
+}
+
 const MEAL_CHOICES = [
   { value: "chicken", label: "Crispy chicken supreme" },
   { value: "beef", label: "Prime rib roast" },
@@ -50,6 +55,9 @@ const RSVPSection = () => {
   const [attendanceSelections, setAttendanceSelections] = useState<Record<string, "attending" | "not-attending">>({});
   const [message, setMessage] = useState("");
   const [showPartyForm, setShowPartyForm] = useState(false);
+  const [showDisambiguation, setShowDisambiguation] = useState(false);
+  const [potentialMatches, setPotentialMatches] = useState<PartyMatch[]>([]);
+  const [partyName, setPartyName] = useState<string | null>(null);
   
   const { toast } = useToast();
 
@@ -102,15 +110,54 @@ const RSVPSection = () => {
       return;
     }
 
-    const foundGuest = results[0].item;
+    // Get unique party IDs from top matches (limit to reasonable threshold)
+    const topMatches = results.filter(r => (r.score || 0) < 0.4).slice(0, 10);
+    const uniquePartyIds = [...new Set(topMatches.map(r => r.item.party_id))];
 
-    // Fetch all party members
-    const { data: party, error: partyError } = await supabase
-      .from('guest_list')
-      .select('*')
-      .eq('party_id', foundGuest.party_id);
+    // If only one party found, go directly to form
+    if (uniquePartyIds.length === 1) {
+      const foundGuest = results[0].item;
+      const { data: party, error: partyError } = await supabase
+        .from('guest_list')
+        .select('*')
+        .eq('party_id', foundGuest.party_id);
 
-    if (partyError || !party) {
+      if (partyError || !party) {
+        toast({
+          title: "Error",
+          description: "Failed to load party information. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setPartyMembers(party);
+      const resolvedPartyName = foundGuest.party_code || party.find(member => member.party_code)?.party_code || null;
+      setPartyName(resolvedPartyName);
+      setShowPartyForm(true);
+      return;
+    }
+
+    // Multiple parties found - fetch all party members for disambiguation
+    const matches: PartyMatch[] = [];
+    for (const partyId of uniquePartyIds) {
+      const matchedGuest = topMatches.find(r => r.item.party_id === partyId)?.item;
+      if (!matchedGuest) continue;
+
+      const { data: partyData, error: partyError } = await supabase
+        .from('guest_list')
+        .select('*')
+        .eq('party_id', partyId);
+
+      if (!partyError && partyData) {
+        matches.push({
+          matchedGuest,
+          partyMembers: partyData,
+        });
+      }
+    }
+
+    if (matches.length === 0) {
       toast({
         title: "Error",
         description: "Failed to load party information. Please try again.",
@@ -119,7 +166,26 @@ const RSVPSection = () => {
       return;
     }
 
-    setPartyMembers(party);
+    if (matches.length === 1) {
+      // Only one valid party after fetching
+      const match = matches[0];
+      setPartyMembers(match.partyMembers);
+      const resolvedPartyName = match.matchedGuest.party_code || match.partyMembers.find(member => member.party_code)?.party_code || null;
+      setPartyName(resolvedPartyName);
+      setShowPartyForm(true);
+    } else {
+      // Show disambiguation UI
+      setPotentialMatches(matches);
+      setShowDisambiguation(true);
+    }
+  };
+
+  const selectParty = (match: PartyMatch) => {
+    setPartyMembers(match.partyMembers);
+    const resolvedPartyName = match.matchedGuest.party_code || match.partyMembers.find(member => member.party_code)?.party_code || null;
+    setPartyName(resolvedPartyName);
+    setShowDisambiguation(false);
+    setPotentialMatches([]);
     setShowPartyForm(true);
   };
 
@@ -229,6 +295,9 @@ const RSVPSection = () => {
     setAttendanceSelections({});
     setMessage("");
     setShowPartyForm(false);
+    setShowDisambiguation(false);
+    setPotentialMatches([]);
+    setPartyName(null);
   };
 
   const toggleGuest = (guestId: string) => {
@@ -273,7 +342,56 @@ const RSVPSection = () => {
 
         <Card className="bg-card/95 backdrop-blur-sm border-0 shadow-elegant animate-scale-in">
           <CardContent className="pt-12 pb-8 flex flex-col justify-center">
-            {!showPartyForm ? (
+            {showDisambiguation ? (
+              <div className="space-y-6">
+                <div className="text-center">
+                  <p className="text-foreground font-medium text-lg mb-2">
+                    We found multiple matches
+                  </p>
+                  <p className="text-sm text-foreground">
+                    Please select your party:
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  {potentialMatches.map((match) => (
+                    <button
+                      key={match.matchedGuest.party_id}
+                      onClick={() => selectParty(match)}
+                      className="w-full text-left p-4 rounded-lg border border-border hover:border-foreground/50 hover:bg-muted/50 transition-colors"
+                    >
+                      <p className="font-medium text-foreground mb-1">
+                        {match.matchedGuest.name}
+                      </p>
+                      {match.partyMembers.length > 1 && (
+                        <p className="text-sm text-muted-foreground">
+                          Party with: {match.partyMembers
+                            .filter(m => m.id !== match.matchedGuest.id)
+                            .map(m => m.name)
+                            .join(", ")}
+                        </p>
+                      )}
+                      {match.partyMembers.length === 1 && (
+                        <p className="text-sm text-muted-foreground">
+                          Individual guest
+                        </p>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className="text-center pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowDisambiguation(false);
+                      setPotentialMatches([]);
+                    }}
+                  >
+                    Back to Search
+                  </Button>
+                </div>
+              </div>
+            ) : !showPartyForm ? (
               <form onSubmit={handleSearch} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="searchInput" className="text-foreground font-medium">
@@ -455,6 +573,8 @@ const RSVPSection = () => {
                     variant="outline"
                     onClick={() => {
                       setShowPartyForm(false);
+                      setShowDisambiguation(false);
+                      setPotentialMatches([]);
                       setPartyMembers([]);
                       setSelectedGuests([]);
                       setMealChoices({});
