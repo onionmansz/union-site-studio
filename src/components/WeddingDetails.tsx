@@ -111,14 +111,14 @@ const WeddingDetails = () => {
               <div className="text-foreground space-y-4">
                 <div>
                   <p className="mb-1">To start:</p>
-                  <p>A <span className="font-semibold">kale and brussels sprout caesar salad </span> with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
+                  <p>A <span className="font-semibold">kale and radicchio caesar salad</span> with smoked bacon (optional), asiago and lemon chia yogurt dressing.</p>
                 </div>
                 <div>
                   <p className="mb-2">Followed by your choice of:</p>
                   <ul className="space-y-1">
                     <li><span className="font-semibold">Prime rib roast</span> with crispy onion and red wine jus</li>
                     <li><span className="font-semibold">Crispy chicken supreme</span> stuffed with basil pesto, fontina and goat cheese</li>
-                    <li><span className="font-semibold">Vegetarian stuffed pepper</span></li>
+                    <li><span className="font-semibold">Mediterranean quinoa stuffed pepper</span> with feta, cucumbers, olives and tomatoes</li>
                   </ul>
                   <p className="mt-2">All entrées served with mashed potatoes and seasonal vegetables.</p>
                 </div>
