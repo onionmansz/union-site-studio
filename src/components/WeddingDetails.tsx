@@ -52,7 +52,7 @@ const WeddingDetails = () => {
           <div className="grid md:grid-cols-3 gap-6 text-center max-w-5xl mx-auto mb-6">
             <div>
               <h4 className="font-semibold text-foreground mb-2">RSVP Deadline</h4>
-              <p className="text-foreground">Kindly respond by <span className="font-semibold">March 21st, 2026</span></p>
+              <p className="text-foreground">Kindly respond by <span className="font-semibold">March 15th, 2026</span></p>
             </div>
             <div>
               <h4 className="font-semibold text-foreground mb-2">Dress Code</h4>
