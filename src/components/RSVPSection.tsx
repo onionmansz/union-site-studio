@@ -360,13 +360,13 @@ const RSVPSection = () => {
                       className="w-full text-left p-4 rounded-lg border border-border hover:border-foreground/50 hover:bg-muted/50 transition-colors"
                     >
                       <p className="font-medium text-foreground mb-1">
-                        {match.matchedGuest.name}
+                        {match.matchedGuest.name.split(' ')[0]}
                       </p>
                       {match.partyMembers.length > 1 && (
                         <p className="text-sm text-muted-foreground">
                           Party with: {match.partyMembers
                             .filter(m => m.id !== match.matchedGuest.id)
-                            .map(m => m.name)
+                            .map(m => m.name.split(' ')[0])
                             .join(", ")}
                         </p>
                       )}
