@@ -273,7 +273,7 @@ const RSVPSection = () => {
         body: {
           guests: guestDetails,
           message: message || undefined,
-          recipientEmail: 'julian3216@gmail.com',
+          recipientEmails: ['julian3216@gmail.com', 'GennaandJulian@gmail.com'],
         },
       });
     } catch (emailError) {

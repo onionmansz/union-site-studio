@@ -14,7 +14,7 @@ interface RSVPEmailRequest {
     dietaryRestrictions?: string;
   }>;
   message?: string;
-  recipientEmail: string;
+  recipientEmails: string[];
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -24,7 +24,7 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { guests, message, recipientEmail }: RSVPEmailRequest = await req.json();
+    const { guests, message, recipientEmails }: RSVPEmailRequest = await req.json();
 
     console.log("Sending RSVP email for guests:", guests.map(g => g.name).join(", "));
 
@@ -38,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "Wedding RSVP <onboarding@resend.dev>",
-      to: [recipientEmail],
+      to: recipientEmails,
       subject: "New Wedding RSVP Received! 💍",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
