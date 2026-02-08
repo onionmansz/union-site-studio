@@ -27,6 +27,7 @@ const Index = () => {
           <LocationMap />
         </div>
       </section>
+      <RegistrySection />
       <Footer />
     </div>
   );
