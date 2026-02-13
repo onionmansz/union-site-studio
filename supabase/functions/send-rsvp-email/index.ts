@@ -28,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { guests, message, recipientEmail }: RSVPEmailRequest = await req.json();
 
-    console.log("Sending RSVP email for guests:", guests.map(g => g.name).join(", "));
+    console.log("Sending RSVP email with full data:", JSON.stringify({ guests, message, recipientEmail }));
 
     // Build the guest list HTML
     const guestListHTML = guests.map(guest => {
