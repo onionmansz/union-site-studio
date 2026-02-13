@@ -30,6 +30,7 @@ const GuestListManager = () => {
     name: "",
     email: "",
     party_id: "",
+    party_name: "",
   });
   const [existingParties, setExistingParties] = useState<Array<{ party_id: string; names: string[]; party_name: string }>>([]);
   const [partyNameEdits, setPartyNameEdits] = useState<Record<string, string>>({});
