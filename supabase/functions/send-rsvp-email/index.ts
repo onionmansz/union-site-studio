@@ -11,6 +11,8 @@ const corsHeaders = {
 interface RSVPEmailRequest {
   guests: Array<{
     name: string;
+    attendance: string;
+    mealChoice?: string;
     dietaryRestrictions?: string;
   }>;
   message?: string;
@@ -29,12 +31,19 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending RSVP email for guests:", guests.map(g => g.name).join(", "));
 
     // Build the guest list HTML
-    const guestListHTML = guests.map(guest => `
+    const guestListHTML = guests.map(guest => {
+      const isAttending = guest.attendance === 'attending';
+      const statusColor = isAttending ? '#2d7a2d' : '#c0392b';
+      const statusLabel = isAttending ? 'Attending' : 'Not Attending';
+      return `
       <li style="margin-bottom: 12px;">
         <strong>${guest.name}</strong>
-        ${guest.dietaryRestrictions ? `<br><em style="color: #666;">Dietary Restrictions: ${guest.dietaryRestrictions}</em>` : ''}
+        <span style="color: ${statusColor}; font-weight: bold;"> — ${statusLabel}</span>
+        ${isAttending && guest.mealChoice ? `<br><em style="color: #666;">Meal Choice: ${guest.mealChoice}</em>` : ''}
+        ${isAttending && guest.dietaryRestrictions ? `<br><em style="color: #666;">Dietary Restrictions: ${guest.dietaryRestrictions}</em>` : ''}
       </li>
-    `).join('');
+    `;
+    }).join('');
 
     const emailResponse = await resend.emails.send({
       from: "Wedding RSVP <onboarding@resend.dev>",
@@ -46,7 +55,7 @@ const handler = async (req: Request): Promise<Response> => {
             New RSVP Received
           </h1>
           
-          <h2 style="color: #333; margin-top: 30px;">Attending Guests:</h2>
+          <h2 style="color: #333; margin-top: 30px;">Guest Responses:</h2>
           <ul style="list-style: none; padding: 0;">
             ${guestListHTML}
           </ul>
