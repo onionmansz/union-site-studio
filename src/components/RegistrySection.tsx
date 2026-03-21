@@ -6,8 +6,7 @@ const RegistrySection = () => {
           Gift Registry
         </h2>
         <p className="text-xl text-foreground max-w-2xl mx-auto mb-10">
-          Your presence is the greatest gift, but if you'd like to celebrate with a gift,
-          we've registered at a few of our favorite places
+          We just want you there! But if gifts are your thing, here's where we've registered.
         </p>
         <a
           href="https://www.myregistry.com/wedding-registry/genna-sd-and-julian-k-toronto-on/5242937"
