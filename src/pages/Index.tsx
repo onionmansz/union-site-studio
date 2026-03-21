@@ -22,6 +22,7 @@ const Index = () => {
       </div>
       <WeddingDetails />
       <RSVPSection />
+      <RegistrySection />
       <section className="py-20 px-6 bg-background">
         <div className="max-w-6xl mx-auto">
           <LocationMap />
