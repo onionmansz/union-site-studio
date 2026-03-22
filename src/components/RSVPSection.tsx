@@ -585,9 +585,9 @@ const RSVPSection = () => {
                   >
                     Back
                   </Button>
-                  <Button 
+                  <Button
                     type="submit"
-                    className="bg-rose hover:bg-rose/90 text-rose-foreground flex-1 shadow-romantic"
+                    className="bg-foreground hover:bg-foreground/90 text-background flex-1 shadow-romantic"
                   >
                     Send RSVP
                   </Button>
