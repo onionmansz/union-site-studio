@@ -12,7 +12,7 @@ const RegistrySection = () => {
           href="https://www.myregistry.com/wedding-registry/genna-sd-and-julian-k-toronto-on/5242937"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-rose hover:bg-rose/90 text-rose-foreground font-semibold px-8 py-3 rounded-md transition-colors shadow-romantic"
+          className="inline-block bg-foreground hover:bg-foreground/90 text-background font-semibold px-8 py-3 rounded-md transition-colors shadow-romantic"
         >
           View Registry
         </a>
