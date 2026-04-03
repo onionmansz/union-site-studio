@@ -52,7 +52,7 @@ const HeroSection = () => {
 
           {hasWeddingPassed ? (
             <p className="text-xl md:text-2xl text-foreground font-light mb-8 animate-fade-in-up">
-              Thank you for celebrating with us on April 25th, 2026!
+              Thank you for celebrating with us!
             </p>
           ) : (
             <>
