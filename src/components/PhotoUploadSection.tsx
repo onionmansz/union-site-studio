@@ -3,7 +3,7 @@ const PhotoUploadSection = () => {
     <section className="py-20 px-6 bg-background">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
-          Thank you for celebrating with us!
+          Share Your Photos
         </h2>
         <p className="text-xl text-foreground max-w-2xl mx-auto mb-10">
           Help us relive the magic! Upload your photos and videos from our special day.
