@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const WEDDING_DATE = new Date('2026-04-25T16:00:00');
+const WEDDING_DATE = new Date('2026-04-25T16:00:00-04:00'); // 4pm Eastern
 
 export function useWeddingDate() {
   const [hasWeddingPassed, setHasWeddingPassed] = useState(() => {
