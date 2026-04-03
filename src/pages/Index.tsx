@@ -16,7 +16,6 @@ const Index = () => {
     <div className="min-h-screen bg-background relative">
       <FloatingElements />
       <HeroSection />
-      {hasWeddingPassed && <PhotoUploadSection />}
       <div className="px-6 bg-background">
         <img
           src={palettaMansion}
@@ -24,7 +23,9 @@ const Index = () => {
           className="max-w-4xl w-full mx-auto"
         />
       </div>
-      {!hasWeddingPassed && (
+      {hasWeddingPassed ? (
+        <PhotoUploadSection />
+      ) : (
         <>
           <WeddingDetails />
           <RSVPSection />

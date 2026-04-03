@@ -97,11 +97,11 @@ const WeddingDetails = () => {
             <div className="text-center">
               <h5 className="font-semibold text-foreground text-lg mb-4">Cocktail Hour</h5>
               <ul className="space-y-2 text-foreground">
+                <li><span className="font-semibold">Mushroom arancini</span> with truffle aioli</li>
                 <li><span className="font-semibold">Coconut shrimp</span> with pineapple ginger dip</li>
                 <li><span className="font-semibold">Spanakopita</span> - cheese and spinach, with tzatziki</li>
+                <li><span className="font-semibold">Sesame chicken dumplings</span> with sweet ginger sauce</li>
                 <li><span className="font-semibold">Fried chicken and cornbread</span> with jalapeño and slaw</li>
-                <li><span className="font-semibold">BBQ pulled chicken sliders</span> with crunchy pickle slaw</li>
-                <li><span className="font-semibold">Korean beef skewers</span> with sweet ginger sauce</li>
               </ul>
             </div>
 
